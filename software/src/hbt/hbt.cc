@@ -5,6 +5,7 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	parsfilename_prefix=parsfilename_prefix_set;
 	string parsfilename="parameters/"+parsfilename_prefix+".txt";
 	parmap.ReadParsFromFile(parsfilename);
+	parmap.PrintPars();
 	string logfilename=parmap.getS("LOG_FILENAME","log.txt");
 	//string coralpars_filename=parmap.getS("CORALPARS_FILENAME","parameters/coralpars.txt");
 	//parmap.ReadParsFromFile(coralpars_filename);

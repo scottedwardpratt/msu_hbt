@@ -92,7 +92,6 @@ void CWaveFunction::ParsInit(string parsfilename){
   string stemp;
   int iq;
   bool filetest=0;
-
   parameters.ReadParsFromFile(parsfilename);
   
   stemp=parameters.getS("QARRAYFILENAME","no_qarray_file");
@@ -120,7 +119,6 @@ void CWaveFunction::ParsInit(string parsfilename){
     fclose(qarrayfile);
   }
   else{
-    delq=parameters.getD("DELQ",-999);
     qarray=new double[nqmax];
     for(iq=0;iq<nqmax;iq++){
       qarray[iq]=(iq+0.5)*delq;
