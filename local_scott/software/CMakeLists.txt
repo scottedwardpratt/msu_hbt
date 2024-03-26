@@ -35,3 +35,14 @@ target_link_libraries(hbt_fromGauss msu_hbt msu_commonutils msu_coral ${GITHOME_
 ${GITHOME_MSU_HBT}/software/lib/libmsu_hbt.a ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 
 #####################
+#####################
+
+set(SOURCE_FILES ./main_programs/hbt_fromOSCAR.cc)
+add_executable(hbt_fromOSCAR ${SOURCE_FILES})
+SET_SOURCE_FILES_PROPERTIES(hbt_fromOSCAR.cc PROPERTIES OBJECT_DEPENDS extern_msu_hbt)
+add_dependencies(hbt_fromOSCAR extern_msu_hbt)
+
+target_link_libraries(hbt_fromOSCAR msu_hbt msu_commonutils msu_coral ${GITHOME_MSU_HBT}/software/lib/libmsu_commonutils.a ${GITHOME_MSU_HBT}/software/lib/libmsu_coral.a
+${GITHOME_MSU_HBT}/software/lib/libmsu_hbt.a ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
+
+#####################
