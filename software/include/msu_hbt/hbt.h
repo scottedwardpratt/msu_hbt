@@ -45,7 +45,7 @@ public:
 	Chbt_cell_list(CparameterMap *parmap);
 	int NRAPX,NRAPY,NRAPZ;
 	double DRAPX,DRAPY,DRAPZ;
-	double rapxmin,rapymin,rapzmin,rapxmax,rapymax,rapzmax;
+	double rapxmax,rapymax,rapzmin,rapzmax;
 	double QMAX;
 	vector<vector<vector<Chbt_cell *> >> cell;
 	void FindCell(Chbt_part *part,Chbt_cell *&cell);

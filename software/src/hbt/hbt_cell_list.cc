@@ -40,54 +40,28 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	NRAPZ=2+2*floorl(rapzmax/DRAPZ);
 	*/
 	// This is the new way
-	double PXMINa,PXMAXa,PXMINb,PXMAXb,PYMINa,PYMAXa,PYMINb,PYMAXb;
 	double acceptance_ptmax_a,acceptance_ptmax_b,acceptance_ptmin_a,acceptance_ptmin_b;
 	double acceptance_rapmax,acceptance_rapmin;
-	double rapxmin_a,rapxmin_b,rapxmax_a,rapxmax_b,rapymin_a,rapymin_b,rapymax_a,rapymax_b;
+	double rapxmax_a,rapxmax_b;
 	acceptance_rapmax=parmap->getD("ACCEPTANCE_YMAX",1.0);
 	acceptance_rapmin=parmap->getD("ACCEPTANCE_YMIN",1.0);
-	acceptance_ptmin_a=parmap->getD("ACCEPTANCE_PTMIN_A",0.0);
-	acceptance_ptmin_b=parmap->getD("ACCEPTANCE_PTMIN_B",0.0);
 	acceptance_ptmax_a=parmap->getD("ACCEPTANCE_PTMAX_A",0.0);
 	acceptance_ptmax_b=parmap->getD("ACCEPTANCE_PTMAX_B",0.0);
 	
-	PXMINa=acceptance_ptmin_a;
-	PXMAXa=acceptance_ptmax_a;
-	rapxmin_a=asinh(PXMINa/ma);
-	rapxmax_a=asinh(PXMAXa/ma);
-	PXMINb=acceptance_ptmin_b;
-	PXMAXb=acceptance_ptmax_b;
-	rapxmin_b=asinh(PXMINb/mb);
-	rapxmax_b=asinh(PXMAXb/mb);
-	if(rapxmin_a<rapxmin_b)
-		rapxmin=rapxmin_a;
-	else
-		rapxmin=rapxmin_b;
+	rapxmax_a=asinh(acceptance_ptmax_a/ma);
+	rapxmax_b=asinh(acceptance_ptmax_b/mb);
 	if(rapxmax_a>rapxmax_b)
 		rapxmax=rapxmax_a;
 	else
 		rapxmax=rapxmax_b;
-	NRAPX=ceill((rapxmax-rapxmin)/DRAPX);
-	rapxmax=rapxmin+NRAPX*DRAPX;
 	
-	PYMINa=acceptance_ptmin_a;
-	PYMAXa=acceptance_ptmax_a;
-	rapymin_a=asinh(PYMINa/ma);
-	rapymax_a=asinh(PYMAXa/ma);
-	PYMINb=acceptance_ptmin_b;
-	PYMAXb=acceptance_ptmax_b;
-	rapymin_b=asinh(PYMINb/mb);
-	rapymax_b=asinh(PYMAXb/mb);
-	if(rapymin_a<rapymin_b)
-		rapymin=rapymin_a;
-	else
-		rapymin=rapymin_b;
-	if(rapymax_a>rapymax_b)
-		rapymax=rapymax_a;
-	else
-		rapymax=rapymax_b;
-	NRAPY=ceill((rapymax-rapymin)/DRAPY);
-	rapymax=rapxmin+NRAPX*DRAPY;
+	NRAPX=2*ceill(rapxmax_a/DRAPX);
+	rapxmax=(NRAPX/2)*DRAPX;
+	rapxmin=-rapxmax;
+	
+	NRAPY=NRAPX;
+	rapymax=rapxmax;
+	rapymin=rapxmin;
 	
 	rapzmin=acceptance_rapmin;
 	rapzmax=acceptance_rapmax;
