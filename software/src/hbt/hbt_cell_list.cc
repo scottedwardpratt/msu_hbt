@@ -40,7 +40,7 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	NRAPZ=2+2*floorl(rapzmax/DRAPZ);
 	*/
 	// This is the new way
-	double acceptance_ptmax_a,acceptance_ptmax_b,acceptance_ptmin_a,acceptance_ptmin_b;
+	double acceptance_ptmax_a,acceptance_ptmax_b;
 	double acceptance_rapmax,acceptance_rapmin;
 	double rapxmax_a,rapxmax_b;
 	acceptance_rapmax=parmap->getD("ACCEPTANCE_YMAX",1.0);
@@ -57,11 +57,10 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	
 	NRAPX=2*ceill(rapxmax_a/DRAPX);
 	rapxmax=(NRAPX/2)*DRAPX;
-	rapxmin=-rapxmax;
 	
 	NRAPY=NRAPX;
 	rapymax=rapxmax;
-	rapymin=rapxmin;
+
 	
 	rapzmin=acceptance_rapmin;
 	rapzmax=acceptance_rapmax;
