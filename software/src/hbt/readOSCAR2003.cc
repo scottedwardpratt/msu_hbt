@@ -69,7 +69,7 @@ void Chbt_master::ReadOSCAR_2003(){
 					tmp_particle->x[3]=z-(pz/p0)*(t-taucompare);
 					tmp_particle->x[0]=taucompare;
 					
-					accept=acceptance->OneParticleAcceptance(pdg,tmp_particle, eff);
+					accept=acceptance->OneParticleAcceptance(tmp_particle, eff);
 					if(accept){
 						cell_list->FindCell(tmp_particle,cell);
 						if(cell!=NULL){
@@ -80,7 +80,7 @@ void Chbt_master::ReadOSCAR_2003(){
 					}
 				}
 				else if(pdg == PIDB ){
-					accept=acceptance->OneParticleAcceptance(pdg, tmp_particle, eff);
+					accept=acceptance->OneParticleAcceptance(tmp_particle, eff);
 					tmp_particle->p[0]=p0;
 					tmp_particle->p[1]=px; tmp_particle->p[2]=py; tmp_particle->p[3]=pz;
 					tmp_particle->mass=mass;
@@ -92,7 +92,7 @@ void Chbt_master::ReadOSCAR_2003(){
 					tmp_particle->x[3]=z-(pz/p0)*(t-taucompare);
 					tmp_particle->x[0]=taucompare;
 					
-					accept=acceptance->OneParticleAcceptance(pdg,tmp_particle, eff);
+					accept=acceptance->OneParticleAcceptance(tmp_particle, eff);
 					if(accept){
 						cell_list->FindCell(tmp_particle,cell);
 						if(cell!=NULL){

@@ -99,7 +99,7 @@ void Chbt_master::ReadOSCAR_1997(){
 							tmp_particle->x[3]=z-(pz/p0)*(t-taucompare);
 							tmp_particle->x[0]=taucompare;				
 							
-							accept=acceptance->OneParticleAcceptance(pdg,tmp_particle, eff);
+							accept=acceptance->OneParticleAcceptance(tmp_particle, eff);
 							if(accept){
 								cell_list->FindCell(tmp_particle,cell);
 								if(cell!=NULL){

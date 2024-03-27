@@ -5,10 +5,12 @@ using namespace NMSUPratt;
 Chbt_master *Chbt_acceptance::master=NULL;
 
 void Chbt_acceptance::Init(CparameterMap *parmap){
-	thetamin=parmap->getD("ACCEPTANCE_THETAMIN",18.0);
-	thetamax=parmap->getD("ACCEPTANCE_THETAMAX",85.0);
-	pTmin=parmap->getD("ACCEPTANCE_PTMIN",0.0);
-	pTmax=parmap->getD("ACCEPTANCE_PTMAX",2500.0);
+	thetamin=parmap->getD("ACCEPTANCE_THETAMIN",0.0);
+	thetamax=parmap->getD("ACCEPTANCE_THETAMAX",360.0);
+	pTmin_a=parmap->getD("ACCEPTANCE_PTMIN_A",0.0);
+	pTmax_a=parmap->getD("ACCEPTANCE_PTMAX_A",2500.0);
+	pTmin_b=parmap->getD("ACCEPTANCE_PTMIN_B",0.0);
+	pTmax_b=parmap->getD("ACCEPTANCE_PTMAX_B",2500.0);
 	ymin=parmap->getD("ACCEPTANCE_YMIN",-5.0);
 	ymax=parmap->getD("ACCEPTANCE_YMAX",5.0);
 	
@@ -26,8 +28,21 @@ void Chbt_acceptance::Init(CparameterMap *parmap){
 	ucm[3]=sqrt(ucm[0]*ucm[0]-1.0);
 }
 
-bool Chbt_acceptance_nosmear::OneParticleAcceptance(int pid, Chbt_part *part, double &efficiency){
+bool Chbt_acceptance_nosmear::OneParticleAcceptance(Chbt_part *part, double &efficiency){
 	//// === GENERIC acceptance === ////
+	int pid=part->pid;
+	double ptmin=0.0,ptmax=2500.0;
+	if(pid==PIDA){
+		ptmin=pTmin_a;
+		ptmax=pTmax_a;
+	}
+	if(pid==PIDB){
+		ptmin=pTmin_b;
+		ptmax=pTmax_b;
+	}
+	else{
+		CLog::Fatal("Calling acceptance with weird pid="+to_string(pid)+"\n");
+	}
 	efficiency=0.0;
 	FourVector Plab;
 	Misc::Boost(ucm,part->psmear,Plab);
@@ -42,7 +57,7 @@ bool Chbt_acceptance_nosmear::OneParticleAcceptance(int pid, Chbt_part *part, do
 		return false;
 
 	//pT:
-	if(pT<pTmin && pT>pTmax)
+	if(pT<ptmin && pT>ptmax)
 		return false;
 
 	//theta:
@@ -68,22 +83,21 @@ void Chbt_acceptance_nosmear::Smear(Chbt_part *part){
 	part->Setp0();
 }
 
-bool Chbt_acceptance_nosmear::TwoParticleAcceptance([[maybe_unused]] Chbt_part *parta,[[maybe_unused]] Chbt_part *partb,
-[[maybe_unused]] double qinv,[[maybe_unused]] double qout,[[maybe_unused]] double qlong,[[maybe_unused]] double qside,[[maybe_unused]] double deleta,[[maybe_unused]] double dely,[[maybe_unused]] double delphi,
-double &efficiency){
-//// === GENERIC acceptance === ////
-	bool acc=true;
-  efficiency=1.0;
-	if(fabs(dely)<0.001 && fabs(delphi)<0.001){
-		efficiency=0.0;
-		acc=false;
-	}
-	
-	return acc;
-}
-
-bool Chbt_acceptance_smear::OneParticleAcceptance(int pid, Chbt_part *part, double &efficiency){
+bool Chbt_acceptance_smear::OneParticleAcceptance(Chbt_part *part, double &efficiency){
 //// === HADES acceptance === ////
+	int pid=part->pid;
+	double ptmin=0.0,ptmax=2500.0;
+	if(pid==PIDA){
+		ptmin=pTmin_a;
+		ptmax=pTmax_a;
+	}
+	if(pid==PIDB){
+		ptmin=pTmin_b;
+		ptmax=pTmax_b;
+	}
+	else{
+		CLog::Fatal("Calling acceptance with weird pid="+to_string(pid)+"\n");
+	}
   efficiency=0.0;
 	FourVector Plab;
 	Misc::Boost(ucm,part->psmear,Plab);
@@ -98,7 +112,7 @@ bool Chbt_acceptance_smear::OneParticleAcceptance(int pid, Chbt_part *part, doub
 
 	//pT:
 	double pT = sqrt(Plab[1]*Plab[1]+Plab[2]*Plab[2]);
-	if(pT<pTmin && pT>pTmax)
+	if(pT<ptmin && pT>ptmax)
 		return false;
 
 	//theta:
@@ -110,8 +124,6 @@ bool Chbt_acceptance_smear::OneParticleAcceptance(int pid, Chbt_part *part, doub
 	double rapidity = 0.5 * log((Plab[0]+Plab[3])/(Plab[0]-Plab[3]));
 	if(rapidity > ymax || rapidity < ymin)
 		return false;
-
-	//// === Efficiency === ////
 	efficiency=1.0;
 	
 	return true;
@@ -136,9 +148,22 @@ void Chbt_acceptance_smear::Smear(Chbt_part *part){
 	part->Setp0();
 }
 
-bool Chbt_acceptance_smear::TwoParticleAcceptance([[maybe_unused]] Chbt_part *parta,
-[[maybe_unused]] Chbt_part *partb,[[maybe_unused]] double qinv,[[maybe_unused]] double qout,[[maybe_unused]] double qlong,[[maybe_unused]] double qside,[[maybe_unused]] double deleta,double dely,double delphi,
-double &efficiency){
+bool Chbt_acceptance_smear::TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency){
+	double qinv,qout,qside,qlong,deleta,dely,delphi;
+	Misc::outsidelong(parta->psmear,partb->psmear,qinv,qout,qside,qlong,deleta,dely,delphi);
+	bool acc=true;
+  efficiency=1.0;
+	
+	if(fabs(dely)<0.001 && fabs(delphi)<0.001){
+		efficiency=0.0;
+		acc=false;
+	}
+	return acc;
+}
+
+bool Chbt_acceptance_nosmear::TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency){
+	double qinv,qout,qside,qlong,deleta,dely,delphi;
+	Misc::outsidelong(parta->psmear,partb->psmear,qinv,qout,qside,qlong,deleta,dely,delphi);
 //// === GENERIC acceptance === ////
 	bool acc=true;
   efficiency=1.0;
@@ -147,13 +172,24 @@ double &efficiency){
 		efficiency=0.0;
 		acc=false;
 	}
-	
-	
 	return acc;
 }
 
-bool Chbt_acceptance_smear_maria::OneParticleAcceptance(int pid, Chbt_part *part, double &efficiency){
+bool Chbt_acceptance_smear_maria::OneParticleAcceptance(Chbt_part *part, double &efficiency){
 //// === HADES acceptance === ////
+	int pid=part->pid;
+	double ptmin=0,ptmax=2500.0;
+	if(pid==PIDA){
+		ptmin=pTmin_a;
+		ptmax=pTmax_a;
+	}
+	if(pid==PIDB){
+		ptmin=pTmin_b;
+		ptmax=pTmax_b;
+	}
+	else{
+		CLog::Fatal("Calling acceptance with weird pid="+to_string(pid)+"\n");
+	}
   efficiency=0.0;
 	FourVector Plab;
 	Misc::Boost(ucm,part->psmear,Plab);
@@ -168,7 +204,7 @@ bool Chbt_acceptance_smear_maria::OneParticleAcceptance(int pid, Chbt_part *part
 
 	//pT:
 	double pT = sqrt(Plab[1]*Plab[1]+Plab[2]*Plab[2]);
-	if(pT<pTmin && pT>pTmax)
+	if(pT<ptmin && pT>ptmax)
 		return false;
 
 	//theta:
@@ -187,12 +223,12 @@ bool Chbt_acceptance_smear_maria::OneParticleAcceptance(int pid, Chbt_part *part
 	return true;
 }
 
-bool Chbt_acceptance_smear_maria::TwoParticleAcceptance([[maybe_unused]]Chbt_part *parta,
-[[maybe_unused]]Chbt_part *partb, [[maybe_unused]] double qinv,
-[[maybe_unused]]double qout,[[maybe_unused]] double qlong,
-[[maybe_unused]] double qside,[[maybe_unused]] double deleta,double dely,double delphi,
-double &efficiency){
+bool Chbt_acceptance_smear_maria::TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency){
 //// === HADES acceptance === ////
+	double qinv,qout,qside,qlong,deleta,dely,delphi;
+	Misc::outsidelong(parta->psmear,partb->psmear,qinv,qout,qside,qlong,deleta,dely,delphi);
+	(void) parta;
+	(void) partb;
 	bool acc=true;
   efficiency=1.0;
 	

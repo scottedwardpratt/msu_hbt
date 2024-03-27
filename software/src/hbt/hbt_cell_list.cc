@@ -8,11 +8,13 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	int ix,iy,iz;
 	int inx,iny,inz;
 	//QMAX=parmap->getD("QMAX",50.0);
-	QMAX=parmap->getD("NQMAX",40)*parmap->getD("DQINV",2.0);
+	QMAX=parmap->getD("NQMAX",50)*parmap->getD("DQINV",2.0);
 	double ma=master->wf->m1;
 	double mb=master->wf->m2;
 	double mu=ma*mb/(ma+mb);
 	DRAPX=DRAPY=DRAPZ=QMAX/mu;
+
+	/* This is the old way
 	double PXMAXa=parmap->getD("PXMAXA",1000.0);
 	double PYMAXa=parmap->getD("PYMAXA",1000.0);
 	double PZMAXa=parmap->getD("PZMAXA",2000.0);
@@ -36,7 +38,63 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	NRAPX=2+2*floorl(rapxmax/DRAPX);
 	NRAPY=2+2*floorl(rapymax/DRAPY);
 	NRAPZ=2+2*floorl(rapzmax/DRAPZ);
-	//CLog::Info("NRAPX="+to_string(NRAPX)+", NRAPY="+to_string(NRAPY)+", NRAPZ="+to_string(NRAPZ)+"\n");
+	*/
+	// This is the new way
+	double PXMINa,PXMAXa,PXMINb,PXMAXb,PYMINa,PYMAXa,PYMINb,PYMAXb;
+	double acceptance_ptmax_a,acceptance_ptmax_b,acceptance_ptmin_a,acceptance_ptmin_b;
+	double acceptance_rapmax,acceptance_rapmin;
+	double rapxmin_a,rapxmin_b,rapxmax_a,rapxmax_b,rapymin_a,rapymin_b,rapymax_a,rapymax_b;
+	acceptance_rapmax=parmap->getD("ACCEPTANCE_YMAX",1.0);
+	acceptance_rapmin=parmap->getD("ACCEPTANCE_YMIN",1.0);
+	acceptance_ptmin_a=parmap->getD("ACCEPTANCE_PTMIN_A",0.0);
+	acceptance_ptmin_b=parmap->getD("ACCEPTANCE_PTMIN_B",0.0);
+	acceptance_ptmax_a=parmap->getD("ACCEPTANCE_PTMAX_A",0.0);
+	acceptance_ptmax_b=parmap->getD("ACCEPTANCE_PTMAX_B",0.0);
+	
+	PXMINa=acceptance_ptmin_a;
+	PXMAXa=acceptance_ptmax_a;
+	rapxmin_a=asinh(PXMINa/ma);
+	rapxmax_a=asinh(PXMAXa/ma);
+	PXMINb=acceptance_ptmin_b;
+	PXMAXb=acceptance_ptmax_b;
+	rapxmin_b=asinh(PXMINb/mb);
+	rapxmax_b=asinh(PXMAXb/mb);
+	if(rapxmin_a<rapxmin_b)
+		rapxmin=rapxmin_a;
+	else
+		rapxmin=rapxmin_b;
+	if(rapxmax_a>rapxmax_b)
+		rapxmax=rapxmax_a;
+	else
+		rapxmax=rapxmax_b;
+	NRAPX=ceill((rapxmax-rapxmin)/DRAPX);
+	rapxmax=rapxmin+NRAPX*DRAPX;
+	
+	PYMINa=acceptance_ptmin_a;
+	PYMAXa=acceptance_ptmax_a;
+	rapymin_a=asinh(PYMINa/ma);
+	rapymax_a=asinh(PYMAXa/ma);
+	PYMINb=acceptance_ptmin_b;
+	PYMAXb=acceptance_ptmax_b;
+	rapymin_b=asinh(PYMINb/mb);
+	rapymax_b=asinh(PYMAXb/mb);
+	if(rapymin_a<rapymin_b)
+		rapymin=rapymin_a;
+	else
+		rapymin=rapymin_b;
+	if(rapymax_a>rapymax_b)
+		rapymax=rapymax_a;
+	else
+		rapymax=rapymax_b;
+	NRAPY=ceill((rapymax-rapymin)/DRAPY);
+	rapymax=rapxmin+NRAPX*DRAPY;
+	
+	rapzmin=acceptance_rapmin;
+	rapzmax=acceptance_rapmax;
+	NRAPZ=ceill((rapzmax-rapzmin)/DRAPZ);
+	rapzmax=rapzmin+NRAPZ*DRAPZ;
+
+	CLog::Info("NRAPX="+to_string(NRAPX)+", NRAPY="+to_string(NRAPY)+", NRAPZ="+to_string(NRAPZ)+"\n");
 	
 	cell.resize(NRAPX);
 	for(ix=0;ix<NRAPX;ix++){

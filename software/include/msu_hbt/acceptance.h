@@ -8,7 +8,8 @@ class Chbt_master;
 
 class Chbt_acceptance{
 public:
-	double pTmax,pTmin,thetamin,thetamax,ymax,ymin;
+	int PIDA,PIDB;
+	double pTmax_a,pTmin_a,pTmax_b,pTmin_b,thetamin,thetamax,ymax,ymin;
 	char message[CLog::CHARLENGTH];
 	static Chbt_master *master;
 	CparameterMap *parmap;
@@ -23,18 +24,16 @@ public:
 		Init(parmap);
 	}
 	
-	virtual bool OneParticleAcceptance(int pid,Chbt_part *part,double &efficiency){
+	virtual bool OneParticleAcceptance(Chbt_part *part,double &efficiency){
 		// this is a dummy function
 		return true;
 	}
 	
-	virtual bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,
-	double qinv,double qout,double qlong,double qside,double deleta,double dely,double delphi,
-	double &efficiency){
+	virtual bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency){
 		// this is a dummy function
+		efficiency=1.0;
 		return true;
 	}
-	
 	
 	virtual void Smear(Chbt_part *part){
 		// this is a dummy function
@@ -48,10 +47,8 @@ public:
 	Chbt_acceptance_nosmear(CparameterMap *parmap){
 		Init(parmap);
 	}
-	bool OneParticleAcceptance(int pid,Chbt_part *part,double &efficiency);
-	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,
-	double qinv,double qout,double qlong,double qside,double deleta,double dely,double delphi,
-	double &efficiency);
+	bool OneParticleAcceptance(Chbt_part *part,double &efficiency);
+	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency);
 	void Smear(Chbt_part *part);
 };
 
@@ -60,10 +57,8 @@ public:
 	Chbt_acceptance_smear(CparameterMap *parmap){
 		Init(parmap);
 	}
-	bool OneParticleAcceptance(int pid,Chbt_part *part,double &efficiency);
-	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,
-	double qinv,double qout,double qlong,double qside,double deleta,double dely,double delphi,
-	double &efficiency);
+	bool OneParticleAcceptance(Chbt_part *part,double &efficiency);
+	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency);
 	void Smear(Chbt_part *part);
 };
 
@@ -72,10 +67,8 @@ public:
 	Chbt_acceptance_smear_maria(CparameterMap *parmap){
 		Init(parmap);
 	}
-	bool OneParticleAcceptance(int pid,Chbt_part *part,double &efficiency);
-	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,
-	double qinv,double qout,double qlong,double qside,double deleta,double dely,double delphi,
-	double &efficiency);
+	bool OneParticleAcceptance(Chbt_part *part,double &efficiency);
+	bool TwoParticleAcceptance(Chbt_part *parta,Chbt_part *partb,double &efficiency);
 	void Smear(Chbt_part *part);
 };
 

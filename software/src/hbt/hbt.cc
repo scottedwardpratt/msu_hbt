@@ -55,6 +55,8 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	else{
 		CLog::Fatal("smearstring="+smearstring+" is not recognized\n");
 	}
+	acceptance->PIDA=PIDA;
+	acceptance->PIDB=PIDB;
 	
 	randy=new Crandy(-12345);
 	acceptance->randy=randy;
@@ -183,10 +185,9 @@ void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){
 	int iq;
 	
 	double qout,qlong,qside,deleta,dely,delphi,qinv_smeared;
-	Misc::outsidelong(parta->psmear,partb->psmear,qinv_smeared,qout,qside,qlong,deleta,dely,delphi);
 	
-	if(acceptance->TwoParticleAcceptance(parta,partb,qinv_smeared,qout,qside,qlong,deleta,dely,delphi,efficiency)){
-		
+	if(acceptance->TwoParticleAcceptance(parta,partb,efficiency)){
+		Misc::outsidelong(parta->psmear,partb->psmear,qinv_smeared,qout,qside,qlong,deleta,dely,delphi);
 		wf->getqrctheta(parta->p,parta->x,partb->p,partb->x,qinv,r,ctheta);
 		if(r>1.0E-8){
 			if(qinv_smeared<cell_list->QMAX){
