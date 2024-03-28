@@ -68,6 +68,7 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	rapzmax=rapzmin+NRAPZ*DRAPZ;
 
 	CLog::Info("NRAPX="+to_string(NRAPX)+", NRAPY="+to_string(NRAPY)+", NRAPZ="+to_string(NRAPZ)+"\n");
+	printf("DRAPX=%g, DRAPZ=%g, rapzmin=%g, rapzmax=%g\n",DRAPX,DRAPZ,rapzmin,rapzmax);
 	
 	cell.resize(NRAPX);
 	for(ix=0;ix<NRAPX;ix++){
@@ -102,6 +103,8 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 }
 
 void Chbt_cell_list::FindCell(Chbt_part *part,Chbt_cell *&cellptr){
+	double drapx,drapy,drapz;
+	int irapx,irapy,irapz;
 	double px=part->psmear[1],py=part->psmear[2],pz=part->psmear[3];
 	double E=part->psmear[0];
 	double mass=sqrt(E*E-px*px-py*py-pz*pz);
@@ -110,14 +113,14 @@ void Chbt_cell_list::FindCell(Chbt_part *part,Chbt_cell *&cellptr){
 	double rapz=asinh(pz/sqrt(mass*mass+py*py+px*px));
 	cellptr=NULL;
 	if(fabs(rapx)<rapxmax && fabs(rapy)<rapymax && fabs(rapz)<rapzmax){
-		double drapx=rapx+NRAPX*DRAPX*0.5;
-		int irapx=lrint(floor(drapx/DRAPX));
+		drapx=rapx+rapxmax;
+		irapx=floorl(drapx/DRAPX);
 		if(irapx>=0 && irapx<NRAPX){
-			double drapy=rapy+NRAPY*DRAPY*0.5;
-			int irapy=lrint(floor(drapy/DRAPY));
+			drapy=rapy+rapymax;
+			irapy=floorl(drapy/DRAPY);
 			if(irapy>=0 && irapy<NRAPY){
-				double drapz=rapz+NRAPZ*DRAPZ*0.5;
-				int irapz=lrint(floor(drapz/DRAPZ));
+				drapz=rapz-rapzmin;
+				irapz=floorl(drapz/DRAPZ);
 				if(irapz>=0 && irapz<NRAPZ){
 					cellptr=cell[irapx][irapy][irapz];
 				}

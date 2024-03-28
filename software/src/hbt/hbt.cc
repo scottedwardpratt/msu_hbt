@@ -78,6 +78,8 @@ void Chbt_master::CalcCFs(){
 		for(icy=0;icy<cell_list->NRAPY;icy++){
 			for(icz=0;icz<cell_list->NRAPZ;icz++){
 				cella=cell_list->cell[icx][icy][icz];
+				printf("%lu a parts in cella\n",cella->partlist_a.size());
+				printf("%lu b parts in cella\n",cella->partlist_a.size());
 				na=cella->partlist_a.size();
 				natot+=na;
 				for(ia=0;ia<na;ia++){
