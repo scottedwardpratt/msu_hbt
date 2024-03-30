@@ -54,6 +54,10 @@ void Chbt_master::ReadOSCAR_2003(){
 			f_in >> nrParticlesInEvent;
 			for(int i = 0; i < nrParticlesInEvent; i++){//reading particles in event loop
 				f_in >> t >> x >> y >> z >> mass >> p0 >> px >> py >> pz >> pdg >> pid >> charge;
+				if(ANTIPARTSYMM && pdg==-PIDA)
+					pdg=PIDA;
+				if(ANTIPARTSYMM && pdg==-PIDB)
+					pdg=PIDB;
 				mass*=1000.0; p0*=1000.0; px*=1000.0; py*=1000.0; pz*=1000.0;
 				bool accept; double eff;
 				if(pdg == PIDA){

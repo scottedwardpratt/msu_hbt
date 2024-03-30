@@ -19,7 +19,6 @@ Chbt_CFs::Chbt_CFs(CparameterMap *parmap){
 	YSYM=parmap->getB("YSYM",YSYM);
 	ZSYM=parmap->getB("ZSYM",ZSYM);
 	
-	
 	threed_num=new C3DArray(NQ3D,DELQ3D,XSYM,YSYM,ZSYM);
 	threed_den=new C3DArray(NQ3D,DELQ3D,XSYM,YSYM,ZSYM);
 		
@@ -64,5 +63,4 @@ void Chbt_CFs::WriteC3D(){
 	command="mkdir -p "+dirname;
 	system(command.c_str());
 	threed_den->WriteArray(dirname);
-
 }

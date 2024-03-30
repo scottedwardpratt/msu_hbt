@@ -12,40 +12,40 @@ CSourceCalc_Blast::CSourceCalc_Blast(){
 
 void CSourceCalc_Blast::InitSPars(){
 	// DEFAULT VALUES
-	spars.set("lambda",0.5);
-	spars.set("R",13.0);
-	spars.set("Tau",12.0);
-	spars.set("DelTau",3.0);
-	spars.set("Beta",0.7);
-	spars.set("T",110.0);
-	spars.set("Pt",600.0);
-	spars.set("Phi",0.0);
-	spars.set("EtaG",1.5);  
-	spars.set("Ma",938.28);
-	spars.set("Mb",139.58);
-	spars.set("Nsample",1000);
+	spars.set("CORAL_BLAST_lambda",0.5);
+	spars.set("CORAL_BLAST_R",13.0);
+	spars.set("CORAL_BLAST_Tau",12.0);
+	spars.set("CORAL_BLAST_DelTau",3.0);
+	spars.set("CORAL_BLAST_Beta",0.7);
+	spars.set("CORAL_BLAST_T",110.0);
+	spars.set("CORAL_BLAST_Pt",600.0);
+	spars.set("CORAL_BLAST_Phi",0.0);
+	spars.set("CORAL_BLAST_EtaG",1.5);  
+	spars.set("CORAL_BLAST_Ma",938.28);
+	spars.set("CORAL_BLAST_Mb",139.58);
+	spars.set("CORAL_BLAST_Nsample",1000);
 }
 
 void CSourceCalc_Blast::SetSPars(double lambdaset,double Rset,double Tauset,double DelTauset,double Betaset,double Tset,double Ptset,double EtaGset,double Maset,double Mbset){
 	InitSPars();
-	spars.set("lambda",lambdaset);
-	spars.set("R",Rset);
-	spars.set("Tau",Tauset);
-	spars.set("Beta",Betaset);
-	spars.set("DelTau",DelTauset);
-	spars.set("T",Tset);
-	spars.set("Pt",Ptset);
-	spars.set("EtaG",EtaGset);  
-	spars.set("Ma",Maset);  
-	spars.set("Mb",Mbset);
+	spars.set("CORAL_BLAST_lambda",lambdaset);
+	spars.set("CORAL_BLAST_R",Rset);
+	spars.set("CORAL_BLAST_Tau",Tauset);
+	spars.set("CORAL_BLAST_Beta",Betaset);
+	spars.set("CORAL_BLAST_DelTau",DelTauset);
+	spars.set("CORAL_BLAST_T",Tset);
+	spars.set("CORAL_BLAST_Pt",Ptset);
+	spars.set("CORAL_BLAST_EtaG",EtaGset);  
+	spars.set("CORAL_BLAST_Ma",Maset);  
+	spars.set("CORAL_BLAST_Mb",Mbset);
 }
 
 void CSourceCalc_Blast::SetSPars(double lambdaset,double Rset,double Tauset,double DelTauset){
 	InitSPars();
-	spars.set("lambda",lambdaset);
-	spars.set("R",Rset);
-	spars.set("Tau",Tauset);
-	spars.set("DelTau",DelTauset);
+	spars.set("CORAL_BLAST_lambda",lambdaset);
+	spars.set("CORAL_BLAST_R",Rset);
+	spars.set("CORAL_BLAST_Tau",Tauset);
+	spars.set("CORAL_BLAST_DelTau",DelTauset);
 }
 
 
@@ -55,13 +55,13 @@ void CSourceCalc_Blast::GetMCList(double *p,CMCList *mclist){
 	double pt,gamma,gammav;
 	int imc,nsample;
 	double m=sqrt(p[0]*p[0]-p[1]*p[1]);
-	etaG=spars.getD("EtaG",-999);
-	R=spars.getD("R",-999);
-	T=spars.getD("T",-999);
-	tau0=spars.getD("Tau",-999);
-	betamax=spars.getD("Beta",-999);
-	deltau=spars.getD("DelTau",-999);
-	nsample=spars.getI("Nsample",-999);
+	etaG=spars.getD("CORAL_BLAST_EtaG",-999);
+	R=spars.getD("CORAL_BLAST_R",-999);
+	T=spars.getD("CORAL_BLAST_T",-999);
+	tau0=spars.getD("CORAL_BLAST_Tau",-999);
+	betamax=spars.getD("CORAL_BLAST_Beta",-999);
+	deltau=spars.getD("CORAL_BLAST_DelTau",-999);
+	nsample=spars.getI("CORAL_BLAST_Nsample",-999);
 	umax=betamax/sqrt(1.0-betamax*betamax);
 	pt=fabs(p[1]);
 	gammav=pt/m;
@@ -124,9 +124,11 @@ void CSourceCalc_Blast::CalcS(CCHArray *A){
 	nrmax=A->GetNRADIAL();
 
 	ma=spars.getD("Ma",-999);
+	ma=spars.getD("CORAL_BLAST_Ma",ma);
 	mb=spars.getD("Mb",-999);
-	nsample=spars.getI("Nsample",1000);
-	lambda=spars.getD("lambda",-999);
+	mb=spars.getD("CORAL_Mb",mb);
+	nsample=spars.getI("CORAL_BLAST_Nsample",1000);
+	lambda=spars.getD("CORAL_BLAST_lambda",-999);
 	SameMass=0;
 	if(fabs(ma-mb)<1.0) SameMass=1;
 
@@ -179,14 +181,14 @@ void CSourceCalc_Blast::CalcS(CMCList *lista,CMCList *listb){
 	double ma,mb,Pt,lambda;
 	int nsample;
 
-	lambda=spars.getD("lambda",1.0);
+	lambda=spars.getD("CORAL_BLAST_lambda",1.0);
 	lista->SetNorm(sqrt(lambda));
 	listb->SetNorm(sqrt(lambda));
-	nsample=spars.getI("Nsample",1000);
-	ma=spars.getD("Ma",-999);
-	mb=spars.getD("Mb",-999);
+	nsample=spars.getI("CORAL_BLAST_Nsample",1000);
+	ma=spars.getD("CORAL_BLAST_Ma",-999);
+	mb=spars.getD("CORAL_Mb",-999);
 	pa[3]=pb[3]=0.0;
-	Pt=spars.getD("Pt",-999);
+	Pt=spars.getD("CORAL_BLAST_Pt",-999);
 	pa[1]=Pt*ma/(ma+mb);
 	pb[1]=Pt*mb/(ma+mb);
 	pa[2]=pa[3]=0.0;

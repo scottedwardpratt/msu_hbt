@@ -5,7 +5,6 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	parsfilename_prefix=parsfilename_prefix_set;
 	string parsfilename="parameters/"+parsfilename_prefix+".txt";
 	parmap.ReadParsFromFile(parsfilename);
-	parmap.PrintPars();
 	string logfilename=parmap.getS("LOG_FILENAME","log.txt");
 	//string coralpars_filename=parmap.getS("CORALPARS_FILENAME","parameters/coralpars.txt");
 	//parmap.ReadParsFromFile(coralpars_filename);
@@ -13,14 +12,16 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	PIDA=parmap.getI("PIDA",211);
 	PIDB=parmap.getI("PIDB",211);
 	GAUSS=parmap.getB("GAUSS",false);
-	if(GAUSS){
-		GAUSS_Rx=parmap.getD("GAUSS_RX",2.7);
-		GAUSS_Ry=parmap.getD("GAUSS_RY",2.7);
-		GAUSS_Rz=parmap.getD("GAUSS_RZ",2.7);
+	OVERRIDE_GAUSS=parmap.getB("OVERRIDE_GAUSS",false);
+	ANTIPARTSYMM=parmap.getB("ANTIPARTSYMM",false);
+	if(OVERRIDE_GAUSS || GAUSS){
+		GAUSS_Rx=parmap.getD("GAUSS_RX",3.0);
+		GAUSS_Ry=parmap.getD("GAUSS_RY",3.0);
+		GAUSS_Rz=parmap.getD("GAUSS_RZ",3.0);
 	}
 	if(PIDA==PIDB){
 		parmap.set("XYZSYM",true);
-	}	
+	}
 	
 	if((PIDA==2212 && PIDB==2212) || (PIDA==-2212 && PIDB==-2212)){
 		wf=new CWaveFunction_pp_schrod(parsfilename);
@@ -36,7 +37,9 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	}
 	
 	Chbt_cell_list::master=this;
-	cell_list=new Chbt_cell_list(&parmap);
+	if(!GAUSS){
+		cell_list=new Chbt_cell_list(&parmap);
+	}
 	
 	Chbt_CFs::master=this;
 	cfs=new Chbt_CFs(&parmap);
@@ -68,9 +71,10 @@ void Chbt_master::CalcCFs(){
 	int inxmin,inymin,inzmin,ibmin;
 	int natot=0;
 	nincrement=nsuccess=0;
-	inxmin=0;
-	if(PIDA==PIDB)
-		inxmin=1;
+	inxmin=inymin=inzmin=0;
+	if(PIDA==PIDB){
+		inxmin=inymin=inzmin=1;
+	}
 	Chbt_cell *cella,*cellb;
 	Chbt_part *parta,*partb;
 	for(icx=0;icx<cell_list->NRAPX;icx++){
@@ -78,32 +82,25 @@ void Chbt_master::CalcCFs(){
 		for(icy=0;icy<cell_list->NRAPY;icy++){
 			for(icz=0;icz<cell_list->NRAPZ;icz++){
 				cella=cell_list->cell[icx][icy][icz];
-				printf("%lu a parts in cella\n",cella->partlist_a.size());
-				printf("%lu b parts in cella\n",cella->partlist_a.size());
 				na=cella->partlist_a.size();
 				natot+=na;
-				for(ia=0;ia<na;ia++){
-					parta=cella->partlist_a[ia];
-					for(inx=inxmin;inx<3;inx++){
-						inymin=0;
-						if(PIDA==PIDB && inx==1)
-							inymin=1;
-						for(iny=inymin;iny<3;iny++){
-							inzmin=0;
-							if(PIDA==PIDB && inx==1 && iny==1)
-								inzmin=1;
-							for(inz=inzmin;inz<3;inz++){
-								cellb=cella->neighbor[inx][iny][inz];
-								if(cellb!=NULL){
+				for(inx=inxmin;inx<3;inx++){
+					for(iny=inymin;iny<3;iny++){
+						for(inz=inzmin;inz<3;inz++){
+							cellb=cella->neighbor[inx][iny][inz];
+							if(cellb!=NULL){
+								if(PIDA==PIDB){
+									nb=cellb->partlist_a.size();
+								}
+								else
+									nb=cellb->partlist_b.size();
+								CLog::Info("na="+to_string(na)+", nb="+to_string(nb)+"\n");
+								for(ia=0;ia<na;ia++){
+									parta=cella->partlist_a[ia];
 									ibmin=0;
 									if(PIDA==PIDB && inx==1 && iny==1 && inz==1){
 										ibmin=ia+1;
 									}
-									if(PIDA==PIDB){
-										nb=cellb->partlist_a.size();
-									}
-									else
-										nb=cellb->partlist_b.size();
 									for(ib=ibmin;ib<nb;ib++){
 										if(PIDA==PIDB)
 											partb=cellb->partlist_a[ib];
@@ -115,6 +112,7 @@ void Chbt_master::CalcCFs(){
 								}
 							}
 						}
+
 					}
 				}
 			}
@@ -131,12 +129,14 @@ void Chbt_master::CalcCFs_Gaussian(){
 	double x,y,z,qx,qy,qz,q,r,ctheta,weight,root2=sqrt(2.0);
 	int imc,NMC=parmap.getI("NMC_GAUSSIAN",1000);
 	int iq,iqx,iqy,iqz,isx,isy,isz,nsx=2,nsy=2,nsz=2;
+	printf("howdy a\n");
 	if(cfs->XSYM)
 		nsx=1;
 	if(cfs->YSYM)
 		nsy=1;
 	if(cfs->ZSYM)
 		nsz=1;
+	printf("howdy b\n");
 	for(iqx=0;iqx<cfs->NQ3D;iqx++){
 		for(isx=0;isx<nsx;isx++){
 			for(iqy=0;iqy<cfs->NQ3D;iqy++){
@@ -180,6 +180,7 @@ void Chbt_master::CalcCFs_Gaussian(){
 			}
 		}
 	}
+	printf("adios\n");
 }
 
 void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){

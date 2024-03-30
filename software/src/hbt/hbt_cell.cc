@@ -12,4 +12,6 @@ Chbt_cell::Chbt_cell(){
 			}
 		}
 	}
+	partlist_a.clear();
+	partlist_b.clear();
 }

@@ -22,7 +22,7 @@ public:
 	string parsfilename_prefix;
 	Chbt_master(string parmapfilename_prefix);
 	int PIDA,PIDB;
-	bool GAUSS;
+	bool GAUSS,OVERRIDE_GAUSS,ANTIPARTSYMM;
 	double GAUSS_Rx,GAUSS_Ry,GAUSS_Rz;
 	CparameterMap parmap;
 	void ReadOSCAR_1997();

@@ -16,10 +16,15 @@ CSourceCalc_OSCAR_MultiBin::CSourceCalc_OSCAR_MultiBin(string sparsfilename){
 	InitSPars();
 	spars.ReadParsFromFile(sparsfilename);
 	NPHIBINS=spars.getI("NPHIBINS",6);
+	NPHIBINS=spars.getI("CORAL_NPHIBINS",NPHIBINS);
 	NPTBINS=spars.getI("NPTBINS",24);
+	NPTBINS=spars.getI("CORAL_NPTBINS",NPTBINS);
 	DELPT=spars.getD("DELPT",25.0);
+	DELPT=spars.getD("CORAL_DELPT",DELPT);
 	PTMIN=spars.getD("PTMIN",150.0);
+	PTMIN=spars.getD("CORAL_PTMIN",PTMIN);
 	OSCARfilename=spars.getS("OSCARfilename","OSCARfilename_undefined");
+	OSCARfilename=spars.getS("CORAL_OSCARfilename",OSCARfilename);
 	PTMAX=PTMIN+NPTBINS*DELPT;
 	DELPHI=90.0/double(NPHIBINS);
 	spars.PrintPars();
@@ -29,34 +34,36 @@ CSourceCalc_OSCAR_MultiBin::CSourceCalc_OSCAR_MultiBin(string sparsfilename){
 
 void CSourceCalc_OSCAR_MultiBin::InitSPars(){
 	// DEFAULT VALUES
-	spars.set("DELPT",25.0);
-	spars.set("NPTBINS",24);
-	spars.set("NPHIBINS",6);
-	spars.set("PTMIN",150.0);
-	spars.set("PHIMIN_DEG",0.0);
-	spars.set("PHIMAX_DEG",360.0);
-	spars.set("YMIN",-1.0);
-	spars.set("YMAX",1.0);
-	spars.set("NPARTSMAX",10000);
-	spars.set("NEVENTSMAX",10000);
-	spars.set("ETA_GAUSS",1.2);
-	NPHIBINS=spars.getI("NPHIBINS",6);
-	NPTBINS=spars.getI("NPTBINS",24);
-	DELPT=spars.getD("DELPT",25.0);
-	PTMIN=spars.getD("PTMIN",150.0);
+	spars.set("CORAL_DELPT",25.0);
+	spars.set("CORAL_NPTBINS",24);
+	spars.set("CORAL_NPHIBINS",6);
+	spars.set("CORAL_PTMIN",150.0);
+	spars.set("CORAL_PHIMIN_DEG",0.0);
+	spars.set("CORAL_PHIMAX_DEG",360.0);
+	spars.set("CORAL_YMIN",-1.0);
+	spars.set("CORAL_YMAX",1.0);
+	spars.set("CORAL_NPARTSMAX",10000);
+	spars.set("CORAL_NEVENTSMAX",10000);
+	spars.set("CORAL_ETA_GAUSS",1.2);
+	NPHIBINS=spars.getI("CORAL_NPHIBINS",6);
+	NPTBINS=spars.getI("CORAL_NPTBINS",24);
+	DELPT=spars.getD("CORAL_DELPT",25.0);
+	PTMIN=spars.getD("CORAL_PTMIN",150.0);
 	OSCARfilename=spars.getS("OSCARfilename","OSCARfilename_undefined");
+	OSCARfilename=spars.getS("CORAL_OSCARfilename",OSCARfilename);
 	B3D_BINARY_FORMAT=spars.getB("B3D_BINARY_FORMAT",false);
+	B3D_BINARY_FORMAT=spars.getB("CORAL_B3D_BINARY_FORMAT",B3D_BINARY_FORMAT);
 	PTMAX=PTMIN+NPTBINS*DELPT;
 	DELPHI=90.0/double(NPHIBINS);
 }
 
 void CSourceCalc_OSCAR_MultiBin::SetSPars(double PT_set,double DELPT_set,double PHIMIN_DEG_set,double PHIMAX_DEG_set,double YMIN_set,double YMAX_set){
-	spars.set("PT",PT_set);
-	spars.set("DELPT",DELPT_set);
-	spars.set("PHIMIN_DEG",PHIMIN_DEG_set);
-	spars.set("PHIMAX_DEG",PHIMAX_DEG_set);
-	spars.set("YMIN",YMIN_set);
-	spars.set("YMAX",YMAX_set);
+	spars.set("CORAL_PT",PT_set);
+	spars.set("CORAL_DELPT",DELPT_set);
+	spars.set("CORAL_PHIMIN_DEG",PHIMIN_DEG_set);
+	spars.set("CORAL_PHIMAX_DEG",PHIMAX_DEG_set);
+	spars.set("CORAL_YMIN",YMIN_set);
+	spars.set("CORAL_YMAX",YMAX_set);
 }
 
 void CSourceCalc_OSCAR_MultiBin::SetIDs(int *idlista,int nida,int *idlistb,int nidb){
@@ -70,7 +77,9 @@ void CSourceCalc_OSCAR_MultiBin::CalcS(CMCPRList ***&lista,CMCPRList ***&listb){
 	double ****ra,****rb,****pa,****pb;
 	int ia,ib,**na,**nb,ipt,iphi;
 	bool AEQUALB=spars.getB("AEQUALB",true);
+	AEQUALB=spars.getB("CORAL_AEQUALB",AEQUALB);
 	int NPARTSMAX=spars.getI("NPARTSMAX",10000);
+	NPARTSMAX=spars.getI("CORAL_NPARTSMAX",NPARTSMAX);
 	//spars.PrintPars();
 	
 	if(lista!=NULL){
@@ -205,123 +214,28 @@ void CSourceCalc_OSCAR_MultiBin::CalcS(CMCPRList ***&lista,CMCPRList ***&listb){
 	}
 }
 
-/*
-long long int CSourceCalc_OSCAR_MultiBin::ReadPR(double ****pa,double ****ra,int **&na,double ****pb,double ****rb,int **&nb){
-	CB3DBinaryPartInfo bpart;
-	long long int nread=0;
-	int ipt,iphi,i;
-	double r[4],p[4],phi,pt;
-	double MA=spars.getD("MA",139.57);
-	double MB=spars.getD("MB",139.57);
-	double mass,mt,tau,rdummy1,rdummy2,rapidity;
-	int ID,idummy;
-	double weight;
-	int ipart,nparts,nevents;
-	int NEVENTSMAX=spars.getI("NEVENTSMAX",100);
-	bool AEQUALB=spars.getB("AEQUALB",false);
-	int NPARTSMAX=spars.getI("NPARTSMAX",10000);
-	FILE *oscarfile;
-
-	if(B3D_BINARY_FORMAT){
-		oscarfile=fopen(OSCARfilename.c_str(),"rb");
-	}
-	else{
-		oscarfile=fopen(OSCARfilename.c_str(),"r");
-	}
-	char dummy[160];
-	for(ipt=0;ipt<NPTBINS;ipt++){
-		for(iphi=0;iphi<NPHIBINS;iphi++){
-			na[ipt][iphi]=0;
-			if(!AEQUALB) nb[ipt][iphi]=0;
-		}
-	}
-
-	if(!B3D_BINARY_FORMAT){
-		for(i=0;i<3;i++)
-			fgets(dummy,160,oscarfile);
-	}
-	nevents=1;
-	while(nevents<=NEVENTSMAX && !feof(oscarfile)){
-		if(B3D_BINARY_FORMAT){
-			fread(&idummy,sizeof(int),1,oscarfile);
-			fread(&nparts,sizeof(int),1,oscarfile);
-		}
-		else{
-			fscanf(oscarfile,"%d %d %lf %lf",&idummy,&nparts,&rdummy1,&rdummy2);
-			fgets(dummy,160,oscarfile);
-		}
-		if(!feof(oscarfile)){
-			for(ipart=0;ipart<nparts;ipart++){
-				if(B3D_BINARY_FORMAT){
-					fread(&bpart,sizeof(bpart),1,oscarfile);
-					nread+=1;
-					ID=bpart.ID;
-					p[1]=bpart.px;
-					p[2]=bpart.py;
-					p[3]=0.0;
-					rapidity=bpart.rapidity;
-					r[1]=bpart.x;
-					r[2]=bpart.y;
-					tau=bpart.tau;
-					r[0]=tau*cosh(bpart.eta-rapidity);
-					r[3]=tau*sinh(bpart.eta-rapidity);
-					weight=bpart.weight;
-				}
-				else{
-					fscanf(oscarfile,"%d %d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-					&idummy,&ID,&p[1],&p[2],&p[3],&p[0],&mass,&r[1],&r[2],&r[3],&r[0],&weight);
-				}
-				pt=sqrt(p[1]*p[1]+p[2]*p[2]);
-				if(pt>PTMIN && pt<PTMAX){			
-					phi=fabs(atan(p[2]/p[1])*180.0/PI);
-					iphi=int(lrint(floor(phi/DELPHI)));
-					ipt=int(lrint(floor((pt-PTMIN)/DELPT)));
-					if(ipt>=NPTBINS || ipt<0){
-						snprintf(message,CLog::CHARLENGTH,"ipt=%d is out of range\n",ipt);
-						CLog::Fatal(message);
-					}
-					if(iphi<0 || iphi>=NPHIBINS){
-						snprintf(message,CLog::CHARLENGTH,"iphi=%d is out of range, phi=%g\n",iphi,phi);
-						bpart.Print();
-						CLog::Fatal(message);
-					}
-					if(IDMatch(ID,idlist_a,nid_a) && na[ipt][iphi]<NPARTSMAX){
-						mass=MA;
-						mt=sqrt(mass*mass+p[1]*p[1]+p[2]*p[2]);
-						p[0]=sqrt(mt*mt+p[3]*p[3]);	
-						Check(p,r,MA,pa[ipt][iphi],ra[ipt][iphi],na[ipt][iphi]);
-					}
-					if(!AEQUALB){
-						if(IDMatch(ID,idlist_b,nid_b) && nb[ipt][iphi]<NPARTSMAX){
-							mass=MB;
-							mt=sqrt(mass*mass+p[1]*p[1]+p[2]*p[2]);
-							p[0]=sqrt(mt*mt+p[3]*p[3]);	
-							Check(p,r,MB,pb[ipt][iphi],rb[ipt][iphi],nb[ipt][iphi]);
-						}
-					}
-				}
-			}
-			nevents+=1;
-		}
-	}
-	fclose(oscarfile);
-	if(AEQUALB) nb=na;
-	return nread;
-}*/
-
 bool CSourceCalc_OSCAR_MultiBin::Check(double *p,double *r,double m,double **pa,double **ra,int &n){
 	double YMIN=spars.getD("YMIN",-1.0);
+	YMIN=spars.getD("CORAL_YMIN",YMIN);
 	double YMAX=spars.getD("YMAX",1.0);
+	YMAX=spars.getD("CORAL_YMAX",YMAX);
 	double PHIMIN=2.0*PI*spars.getD("PHIMIN_DEG",0.0)/360.0;
+	PHIMIN=2.0*PI*spars.getD("CORAL_PHIMIN_DEG",PHIMIN)/360.0;
 	double PHIMAX=2.0*PI*spars.getD("PHIMAX_DEG",0.0)/360.0;
+	PHIMAX=2.0*PI*spars.getD("CORAL_PHIMAX_DEG",PHIMAX)/360.0;
 	double ETA_GAUSS=spars.getD("ETA_GAUSS",1.2);
+	ETA_GAUSS=spars.getD("CORAL_ETA_GAUSS",ETA_GAUSS);
 	double MA=spars.getD("MA",139.57);
+	MA=spars.getD("CORAL_MA",MA);
 	double phi,eta;
 	double rout,rlong,rside,sinhy,coshy,tau,vperp,y;
 	const double TAUCOMPARE=12.0;
 	int NPARTSMAX=spars.getI("NPARTSMAX",20000);
+	NPARTSMAX=spars.getI("CORAL_NPARTSMAX",NPARTSMAX);
 	bool XREFLECTIONSYMMETRY=spars.getB("XREFLECTIONSYMMETRY",false);
+	XREFLECTIONSYMMETRY=spars.getB("CORAL_XREFLECTIONSYMMETRY",XREFLECTIONSYMMETRY);
 	bool YREFLECTIONSYMMETRY=spars.getB("YREFLECTIONSYMMETRY",false);
+	YREFLECTIONSYMMETRY=spars.getB("CORAL_YREFLECTIONSYMMETRY",YREFLECTIONSYMMETRY);
 	bool success=false;
 	double pt=sqrt(p[1]*p[1]+p[2]*p[2]);
 	double gammav=pt/MA;

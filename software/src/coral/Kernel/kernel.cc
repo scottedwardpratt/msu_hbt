@@ -208,11 +208,17 @@ double CKernel::GetValue(int ell,int iq,int ir){
 */
 bool CKernel::Read(CparameterMap& parameters){
 	nqmax=parameters.getI("NQMAX",200);
+	nqmax=parameters.getI("CORAL_NQMAX",nqmax);
 	nrmax=parameters.getI("NRMAX",500);
+	nrmax=parameters.getI("CORAL_NRMAX",nrmax);
 	ellmax=parameters.getI("KLMAX",4);
+	ellmax=parameters.getI("CORAL_KLMAX",ellmax);
 	delq=parameters.getD("DELQ",0.5);
+	delq=parameters.getD("CORAL_DELQ",delq);
 	delr=parameters.getD("DELR",0.1);
+	delr=parameters.getD("CORAL_DELR",delr);
 	IDENTICAL=parameters.getB("IDENTICAL",true);
+	IDENTICAL=parameters.getB("CORAL_IDENTICAL",IDENTICAL);
 	return true;
 }
 
@@ -231,12 +237,12 @@ bool CKernel::Read(CparameterMap& parameters){
 *   - \c IDENTICAL Bool to denote whether this kernel is for identical pairs
 */
 bool CKernel::Write( CparameterMap& parameters){
-	parameters.set("NQMAX",nqmax);
-	parameters.set("NRMAX",nrmax);
-	parameters.set("KLMAX",ellmax);
-	parameters.set("DELQ",delq);
-	parameters.set("DELR",delr);
-	parameters.set("IDENTICAL",IDENTICAL);
+	parameters.set("CORAL_NQMAX",nqmax);
+	parameters.set("CORAL_NRMAX",nrmax);
+	parameters.set("CORAL_KLMAX",ellmax);
+	parameters.set("CORAL_DELQ",delq);
+	parameters.set("CORAL_DELR",delr);
+	parameters.set("CORAL_IDENTICAL",IDENTICAL);
 	return true;
 }
 
@@ -591,11 +597,17 @@ void CKernelWF::ParsInit(string kparsfilename){
 	parameters.ReadParsFromFile(kparsfilename);
 
 	nqmax=parameters.getI("NQMAX",25);
+	nqmax=parameters.getI("CORAL_NQMAX",nqmax);
 	nrmax=parameters.getI("NRMAX",120);
+	nrmax=parameters.getI("CORAL_NRMAX",nrmax);
 	nctheta=parameters.getI("NCTHETA",120);
-	delq=parameters.getD("DELQ",4.0);
+	nctheta=parameters.getI("CORAL_NCTHETA",nctheta);
+	delq=parameters.getD("DELQ",2.0);
+	delq=parameters.getD("CORAL_DELQ",delq);
 	delr=parameters.getD("DELR",0.5);
+	delr=parameters.getD("CORAL_DELR",delr);
 	IDENTICAL=parameters.getB("IDENTICAL",0);
+	IDENTICAL=parameters.getB("CORAL_IDENTICAL",IDENTICAL);
 
 	snprintf(message,CLog::CHARLENGTH,"reading from %s\n",kparsfilename.c_str());
 	CLog::Info(message);

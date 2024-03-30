@@ -10,6 +10,11 @@ CWaveFunction_pHe3_sqwell::CWaveFunction_pHe3_sqwell(string parsfilename) : CWav
 	//CLog::Info("Quick and dirty potentials to replicate low-E phase shifts for p-He3\n");
 	// Interaction fit to phaseshifts from T.V. Daniels et al, PRC (2010).
 	ParsInit(parsfilename);
+	if(TUNINGPHE3){
+		if(fabs(delq-2.0)>1.0E-10){
+			CLog::Fatal("DELQ or DELQ_CORAL in parameter file needs to be set to 2.0 for tuning to work\n");
+		}
+	}
 
 	m1=ProtonMass; 
 	m2=2.0*ProtonMass+NeutronMass-7.718;
@@ -56,7 +61,7 @@ CWaveFunction_pHe3_sqwell::CWaveFunction_pHe3_sqwell(string parsfilename) : CWav
 	
 	if(TUNINGPHE3){
 	
-		// If you are doing fitting (must use delq=1 MeV/c)
+		// If you are doing fitting (must use delq=2 MeV/c)
 		Crandy *randy=new Crandy(-time(NULL));
 		double error,besterror=1.0E99,delta1,delta2,delta3,delta4;
 		double delta1target,delta2target,delta3target,delta4target;

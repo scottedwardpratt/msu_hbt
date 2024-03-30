@@ -68,7 +68,7 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 	rapzmax=rapzmin+NRAPZ*DRAPZ;
 
 	CLog::Info("NRAPX="+to_string(NRAPX)+", NRAPY="+to_string(NRAPY)+", NRAPZ="+to_string(NRAPZ)+"\n");
-	printf("DRAPX=%g, DRAPZ=%g, rapzmin=%g, rapzmax=%g\n",DRAPX,DRAPZ,rapzmin,rapzmax);
+	CLog::Info("QMAX="+to_string(QMAX)+", DRAPX="+to_string(DRAPX)+", rapzmin,rapzmaxmax="+to_string(rapzmin)+","+to_string(rapzmax)+"\n");
 	
 	cell.resize(NRAPX);
 	for(ix=0;ix<NRAPX;ix++){
@@ -89,10 +89,13 @@ Chbt_cell_list::Chbt_cell_list(CparameterMap *parmap){
 					for(iny=0;iny<3;iny++){
 						cell[ix][iy][iz]->neighbor[inx][iny].resize(3);
 						for(inz=0;inz<3;inz++){
-							if((ix+inx<NRAPX && ix+inx-1>=0) 
-								&&(iy+iny<NRAPY && iy+iny-1>=0)
-									&&(iz+inz<NRAPZ && iz+inz-1>=0)){
+							if((ix+inx-1<NRAPX && ix+inx-1>=0) 
+								&&(iy+iny-1<NRAPY && iy+iny-1>=0)
+									&&(iz+inz-1<NRAPZ && iz+inz-1>=0)){
 										cell[ix][iy][iz]->neighbor[inx][iny][inz]=cell[ix+inx-1][iy+iny-1][iz+inz-1];
+							}
+							else{
+								cell[ix][iy][iz]->neighbor[inx][iny][inz]=NULL;
 							}
 						}
 					}

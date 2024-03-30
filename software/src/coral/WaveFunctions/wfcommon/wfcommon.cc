@@ -92,19 +92,27 @@ void CWaveFunction::ParsInit(string parsfilename){
   string stemp;
   int iq;
   bool filetest=0;
+	printf("parsfilename=%s\n",parsfilename.c_str());
   parameters.ReadParsFromFile(parsfilename);
   
   stemp=parameters.getS("QARRAYFILENAME","no_qarray_file");
   strcpy(qarrayfilename,stemp.c_str());
-  delq=parameters.getD("DELQ",-999);
+	delq=parameters.getD("DELQ",-999);
+  delq=parameters.getD("CORAL_DELQ",delq);
   nqmax=parameters.getI("NQMAX",-999);
+	nqmax=parameters.getI("CORAL_NQMAX",nqmax);
   epsilon=parameters.getD("EPSILON",-999);
+	epsilon=parameters.getD("CORAL_EPSILON",epsilon);
   COULOMB=parameters.getB("COULOMB",-999);
+	COULOMB=parameters.getB("CORAL_COULOMB",COULOMB);
   STRONG=parameters.getB("STRONG",-999);
+	STRONG=parameters.getB("CORAL_STRONG",STRONG);
   IDENTICAL=parameters.getB("IDENTICAL",0);
+	IDENTICAL=parameters.getB("CORAL_IDENTICAL",IDENTICAL);
 	
   // If delq<0, read qarray from file (don't use this if for wf in kernels)
-  if(delq<0) filetest=1;
+  if(delq<0)
+		filetest=1;
   if(filetest==1){
     parameters.set("delq",-1.0);
     snprintf(message,CLog::CHARLENGTH,"will read qarray from %s\n",qarrayfilename);
@@ -353,7 +361,7 @@ void CWaveFunction::getqrctheta(FourVector &p1,FourVector &r1,FourVector &p2,Fou
 void CWaveFunction::PrintPhaseShifts(){
 	int iq,ichannel;
 	double q,KE1,mu;
-	printf("printing phaseshifts\n");
+	CLog::Info("printing phaseshifts\n");
 	snprintf(message,CLog::CHARLENGTH,"-------- PHASE SHIFTS --------\n");
 	CLog::Info(message);
 	snprintf(message,CLog::CHARLENGTH,"q(MeV/c)  KE_1(MeV)  ");

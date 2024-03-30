@@ -66,11 +66,14 @@ void Chbt_master::ReadOSCAR_1997(){
 					if(bim>=BMIN && bim<=BMAX){
 						mass*=1000.0; p0*=1000.0; px*=1000.0; py*=1000.0; pz*=1000.0;
 						p0=sqrt(mass*mass+px*px+py*py+pz*pz);
-						pdg = pid;
-						
-						bool accept; double eff;
+						pdg=pid;
+						if(ANTIPARTSYMM && pid==-PIDA)
+							pdg=PIDA;
+						if(ANTIPARTSYMM && pid==-PIDB)
+							pdg=PIDB;
+						bool accept; double eff;						
 						if(pdg == PIDA || pdg==PIDB){
-							if(GAUSS){
+								if(OVERRIDE_GAUSS){
 								//printf("m=%g, p=(%g,%g,%g,%g), r=(%g,%g,%g,%g)\n",mass,p0,px,py,pz,t,x,y,z);
 	
 								double pdotr,psquared,gamma;

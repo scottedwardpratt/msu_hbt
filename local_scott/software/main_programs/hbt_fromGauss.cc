@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc,char *argv[]){
 	string parsfilename;
 	if(argc!=2){
-		printf("Usage hbt_fromGAUSS parameter_file_name_prefix\n");
+		CLog::Info("Usage hbt_fromGAUSS parameter_file_name_prefix\n");
 		exit(1);
 	}
 	else{
@@ -17,6 +17,6 @@ int main(int argc,char *argv[]){
 	hbt_master->CalcCFs_Gaussian();
 	hbt_master->cfs->PrintC_of_qinv();
 	//hbt_master->cfs->WriteC_of_qinv();
-	//msu_hbt_master->cfs->WriteC3D("threed_output_gauss");
+	//hbt_master->cfs->WriteC3D();
 	return 0;
 }
