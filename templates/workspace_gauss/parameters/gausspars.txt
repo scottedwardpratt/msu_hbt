@@ -1,0 +1,55 @@
+int PIDA 211
+int PIDB 211
+# if true will use antiparticles for phasespace points to increase stats
+bool ANTIPARTSYMM true
+#
+# Sets binning
+int NQINV 40
+double DELQINV 2.0
+int NQ3DARRAY 20
+double DELQ3D 4
+#
+# doing gaussian?
+bool GAUSS true
+# If doing OSCAR calcs, replaces delta r with gaussian if OVERRIDE_GAUSS is true (for testing)
+bool OVERRIDE_GAUSS false
+#  In Bjorken coords, Rout=Rx, Ry=Rside and Rz=Rlong (in pair frame)
+double GAUSS_RX 3.0
+double GAUSS_RY 3.0
+double GAUSS_RZ 3.0
+# For purely guassian sources, sets number of MC samplings of source
+int NMC_GAUSSIAN	10000
+#
+# For choosing which OSCAR files to use 
+string OSCAR_FILENAME_FILENAMES oscarfilenames_b9.25.txt
+double OSCAR_BMIN 9.0
+double OSCAR_BMAX 9.5
+#
+# Sets smearing choice
+string HBT_SMEARSTRING nosmear
+#string HBT_SMEARSTRING smear
+#
+# If doing OSCAR calcs, replaces delta r with gaussian (for testing)
+bool OVERRIDE_GAUSS false
+#
+# If not running interactively, output directed here, 
+bool LOG_FILENAME INTERACTIVE
+#bool LOG_FILENAME coral_output.txt
+#
+# ACCEPTANCE PARAMETERS (more details can be set in acceptance routine, this filters particles to store when reading)
+double ACCEPTANCE_YMIN -0.5
+double ACCEPTANCE_YMAX 0.5
+double ACCEPTANCE_PTMIN_A 150.0
+double ACCEPTANCE_PTMAX_A 1000.0
+double ACCEPTANCE_PTMIN_B 150.0
+double ACCEPTANCE_PTMAX_B 1000.0
+#
+# These are used by CorAL to calc w.f.s. If qinv>CORAL_NQMAX*CORAL_DELQ, wf will default to unity
+double CORAL_DELQ 1.0
+int CORAL_NQMAX 100
+double CORAL_EPSILON 0.5
+int CORAL_KLMAX 6
+double CORAL_DELR 0.1
+int CORAL_NRMAX 150
+int CORAL_KLMAX 6
+bool CORAL_IDENTICAL true
