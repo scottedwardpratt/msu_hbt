@@ -73,7 +73,7 @@ void Chbt_master::ReadOSCAR_1997(){
 							pdg=PIDB;
 						bool accept; double eff;						
 						if(pdg == PIDA || pdg==PIDB){
-								if(OVERRIDE_GAUSS){
+							if(OVERRIDE_GAUSS){
 								//printf("m=%g, p=(%g,%g,%g,%g), r=(%g,%g,%g,%g)\n",mass,p0,px,py,pz,t,x,y,z);
 	
 								double pdotr,psquared,gamma;
@@ -81,13 +81,21 @@ void Chbt_master::ReadOSCAR_1997(){
 								y=GAUSS_Ry*randy->ran_gauss();
 								z=GAUSS_Rz*randy->ran_gauss();
 								t=0.0;
-								psquared=px*px+py*py+pz*pz;
-								pdotr=px*x+py*y+pz*z;
-								p0=sqrt(psquared+mass*mass);
-								gamma=p0/mass;
-								x=x-px*pdotr*(1.0-1.0/gamma)/psquared;
-								y=y-py*pdotr*(1.0-1.0/gamma)/psquared;
-								z=z-pz*pdotr*(1.0-1.0/gamma)/psquared;
+								if(!LCMS3DBINNING){
+									double ux=px/mass;
+									double uy=py/mass;
+									double u0=sqrt(1.0+ux*ux+uy*uy);
+									t=ux*x+uy*y;
+									double newx=(1.0+ux*ux/(1.0+u0))*x+(ux*uy/(1.0+u0))*y;
+									y=(1.0+uy*uy/(1.0+u0))*y+(uy*ux/(1.0+u0))*x;
+									x=newx;
+								}
+								
+								double uz=Pz/sqrt(mass*mass+px*px+py*pz);
+								u0=sqrt(1.0+uz*uz);
+								double newt=u0*t+uz*z;
+								z=u0*z+uz*t;
+								t=newt;
 							}
 							
 							tmp_particle->p[0]=p0;

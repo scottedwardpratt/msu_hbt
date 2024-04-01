@@ -7,7 +7,11 @@ bool ANTIPARTSYMM true
 int NQINV 40
 double DELQINV 2.0
 int NQ3DARRAY 20
-double DELQ3D 4
+# Note that this is for q=(pa-pb)/2
+double DELQ3D 5
+# if true, qout is rel momentum in LCMS frame, as opposed to pairframe, irrelavant for gaussian
+# if false qinv^2 = qout^2+qlong^2+qside^2
+bool LCMS3DBINNING true 
 #
 # doing gaussian?
 bool GAUSS false

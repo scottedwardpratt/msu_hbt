@@ -23,6 +23,7 @@ public:
 	Chbt_master(string parmapfilename_prefix);
 	int PIDA,PIDB;
 	bool GAUSS,OVERRIDE_GAUSS,ANTIPARTSYMM;
+	bool LCMS3DBINNING;
 	double GAUSS_Rx,GAUSS_Ry,GAUSS_Rz;
 	CparameterMap parmap;
 	void ReadOSCAR_1997();

@@ -14,6 +14,7 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	GAUSS=parmap.getB("GAUSS",false);
 	OVERRIDE_GAUSS=parmap.getB("OVERRIDE_GAUSS",false);
 	ANTIPARTSYMM=parmap.getB("ANTIPARTSYMM",false);
+	LCMS3DBINNING=parmap.getB("LCMS3DBINNING",false);
 	if(OVERRIDE_GAUSS || GAUSS){
 		GAUSS_Rx=parmap.getD("GAUSS_RX",3.0);
 		GAUSS_Ry=parmap.getD("GAUSS_RY",3.0);
@@ -191,6 +192,15 @@ void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){
 	
 	if(acceptance->TwoParticleAcceptance(parta,partb,efficiency)){
 		Misc::outsidelong(parta->psmear,partb->psmear,qinv_smeared,qout,qside,qlong,deleta,dely,delphi);
+		if(LCMS3DBINNING){
+			double Px,Py,Pperp,qx,qy;
+			qx=parta->p[1]-partb->p[1];
+			qy=parta->p[2]-partb->p[2];
+			Px=parta->P[1]+partb->P[1];
+			Py=parta->P[2]+partb->P[2];
+			Pperp=sqrt(Px*Px+Py*PY);
+			qout=(Px*qx+Py*qy)/Pperp;
+		}
 		wf->getqrctheta(parta->p,parta->x,partb->p,partb->x,qinv,r,ctheta);
 		if(r>1.0E-8){
 			if(qinv_smeared<cell_list->QMAX){
@@ -200,7 +210,7 @@ void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){
 					if(weight!=weight){
 						parta->Print();
 						partb->Print();
-						CLog::Fatal("weight=Nan\n");
+						CLog::Fatal("Inside TwoParticleAcceptance, weight=Nan\n");
 					}
 				}
 			}
