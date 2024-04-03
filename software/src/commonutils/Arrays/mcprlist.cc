@@ -47,8 +47,8 @@ int CMCPRList::GetNMC(){
 void CMCPRList::SetPR(int imc,double *pp,double *rr){
   int alpha;
   if(imc>=nmc){
-    printf("trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
-    exit(1);
+    snprintf(message,CLog::CHARLENGTH,"trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
+    CLog::Fatal(message);
   }
   for(alpha=0;alpha<4;alpha++){
     r[imc][alpha]=rr[alpha];
@@ -58,8 +58,8 @@ void CMCPRList::SetPR(int imc,double *pp,double *rr){
 
 void CMCPRList::SetPR(int imc,double p0,double px,double py,double pz,double t,double x,double y,double z){
   if(imc>=nmc){
-    printf("trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
-    exit(1);
+    snprintf(message,CLog::CHARLENGTH,"trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
+    CLog::Fatal(message);
   }
   r[imc][0]=t;
   r[imc][1]=x;
@@ -73,15 +73,15 @@ void CMCPRList::SetPR(int imc,double p0,double px,double py,double pz,double t,d
 
 double *CMCPRList::GetR(int imc){
   if(imc>=nmc){
-    printf("trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
-    exit(1);
+    snprintf(message,CLog::CHARLENGTH,"trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
+    CLog::Fatal(message);
   }
   return r[imc];
 }
 double *CMCPRList::GetP(int imc){
   if(imc>=nmc){
-    printf("trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
-    exit(1);
+    snprintf(message,CLog::CHARLENGTH,"trying to set CMCPRList.nmc too big, imc=%d, nmc=%d\n",imc,nmc);
+    CLog::Fatal(message);
   }
   return p[imc];
 }
@@ -111,20 +111,22 @@ void CMCPRList::PrintMoments(double Rmax){
 			}
 		}
 	}
-	printf("--------- CMCPRList Moments ----------\n");
-	printf("<x[alpha]>= ");
+	CLog::Info("--------- CMCPRList Moments ----------\n");
+	CLog::Info("<x[alpha]>= ");
 	for(alpha=0;alpha<4;alpha++){
 		xbar[alpha]=xbar[alpha]/norm;
-		printf("%10.3e ",xbar[alpha]);
+		snprintf(message,CLog::CHARLENGTH,"%10.3e ",xbar[alpha]);
+		CLog::Info(message);
 	}
-	printf("\n");
-	printf("sigma^2_alpha,beta= \n");
+	CLog::Info("\n");
+	CLog::Info("sigma^2_alpha,beta= \n");
 	for(alpha=0;alpha<4;alpha++){
 		for(beta=0;beta<4;beta++){
 			x2bar[alpha][beta]=x2bar[alpha][beta]/norm;
 			x2bar[alpha][beta]-=xbar[alpha]*xbar[beta];
-			printf("%10.3e ",x2bar[alpha][beta]);
+			snprintf(message,CLog::CHARLENGTH,"%10.3e ",x2bar[alpha][beta]);
+			CLog::Info(message);
 		}
-		printf("\n");
+		CLog::Info("\n");
 	}
 }

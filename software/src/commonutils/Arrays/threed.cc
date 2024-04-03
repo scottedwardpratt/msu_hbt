@@ -343,11 +343,14 @@ double C3DArray::GetDELZ(){
 }
 
 void C3DArray::PrintPars(){
-	printf("_______ 3DArray Pars ________\n");
-	printf("XYZSYM=(%d,%d,%d)\n",XSYM,YSYM,ZSYM);
-	printf("NXYZMAX=(%d,%d,%d)\n",NXMAX,NYMAX,NZMAX);
-	printf("DELXYZ=(%g,%g,%g)\n",DELX,DELY,DELZ);
-	printf("_____________________________\n");
+	CLog::Info("_______ 3DArray Pars ________\n");
+	snprintf(message,CLog::CHARLENGTH,"XYZSYM=(%d,%d,%d)\n",XSYM,YSYM,ZSYM);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"NXYZMAX=(%d,%d,%d)\n",NXMAX,NYMAX,NZMAX);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"DELXYZ=(%g,%g,%g)\n",DELX,DELY,DELZ);
+	CLog::Info(message);
+	CLog::Info("_____________________________\n");
 }
 
 void C3DArray::WriteArray(string dirname){
@@ -457,7 +460,7 @@ void C3DArray::ReadArray(string dirname){
 		|| fabs(DELXb-DELX)>1.0E-10 || fabs(DELYb-DELY)>1.0E-10
 		|| fabs(DELZb-DELZ)>1.0E-10 || XSYMb!=XSYM
 	|| YSYMb!=YSYM || ZSYMb!=ZSYM){
-		printf("Warning: In ReadArray parameters have changed, new array being created\n");
+		CLog::Info("Warning: In ReadArray parameters have changed, new array being created\n");
 		DeleteArray();
 		CreateArray();
 	}
@@ -585,17 +588,27 @@ void C3DArray::PrintProjections(){
 	NMAX=NXMAX;
 	if(NYMAX>NMAX) NMAX=NXMAX;
 	if(NZMAX>NMAX) NMAX=NZMAX;
-	printf("bool XSYM %d ",XSYM);
-	printf("bool YSYM %d ",YSYM);
-	printf("bool ZSYM %d\n",ZSYM);
-	printf("int NXMAX %d ",NXMAX);
-	printf("int NYMAX %d ",NYMAX);
-	printf("int NZMAX %d\n",NZMAX);
-	printf("double DELX %g ",DELX);
-	printf("double DELY %g ",DELY);
-	printf("double DELZ %g\n",DELZ);
+	snprintf(message,CLog::CHARLENGTH,"bool XSYM %d ",XSYM);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"bool YSYM %d ",YSYM);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"bool ZSYM %d\n",ZSYM);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"int NXMAX %d ",NXMAX);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"int NYMAX %d ",NYMAX);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"int NZMAX %d\n",NZMAX);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"double DELX %g ",DELX);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"double DELY %g ",DELY);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"double DELZ %g\n",DELZ);
+	CLog::Info(message);
 	for(i=0;i<NMAX;i++){
-		printf("%3d | ",i);
+		snprintf(message,CLog::CHARLENGTH,"%3d | ",i);
+		CLog::Info(message);
 		for(isx=0;isx<nsx;isx++){
 			fbar=0.0;
 			if(i<NXMAX){
@@ -608,9 +621,10 @@ void C3DArray::PrintProjections(){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("| ");
+		CLog::Info("| ");
 		for(isy=0;isy<nsy;isy++){
 			fbar=0.0;
 			if(i<NYMAX){
@@ -623,9 +637,10 @@ void C3DArray::PrintProjections(){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("| ");
+		CLog::Info("| ");
 		for(isz=0;isz<nsz;isz++){
 			fbar=0.0;
 			if(i<NZMAX){
@@ -638,9 +653,10 @@ void C3DArray::PrintProjections(){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("\n");
+		CLog::Info("\n");
 	}
 }
 
@@ -665,7 +681,8 @@ void C3DArray::WriteProjections(string filename){
 	fprintf(fptr,"double DELY %g ",DELY);
 	fprintf(fptr,"double DELZ %g\n",DELZ);
 	for(i=0;i<NMAX;i++){
-		printf("%3d | ",i);
+		snprintf(message,CLog::CHARLENGTH,"%3d | ",i);
+		CLog::Info(message);
 		for(isx=0;isx<nsx;isx++){
 			fbar=0.0;
 			if(i<NXMAX){
@@ -678,9 +695,10 @@ void C3DArray::WriteProjections(string filename){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("| ");
+		CLog::Info("| ");
 		for(isy=0;isy<nsy;isy++){
 			fbar=0.0;
 			if(i<NYMAX){
@@ -693,9 +711,10 @@ void C3DArray::WriteProjections(string filename){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("| ");
+		CLog::Info("| ");
 		for(isz=0;isz<nsz;isz++){
 			fbar=0.0;
 			if(i<NZMAX){
@@ -708,9 +727,10 @@ void C3DArray::WriteProjections(string filename){
 				}
 				fbar=fbar/double(nav);
 			}
-			printf("%9.3e ",fbar);
+			snprintf(message,CLog::CHARLENGTH,"%9.3e ",fbar);
+			CLog::Info(message);
 		}
-		printf("\n");
+		CLog::Info("\n");
 	}
 	fclose(fptr);
 }
@@ -755,22 +775,18 @@ void C3DArray::CalcMoments(double roff[3],double r2[3][3]){
 	if(XSYM) roff[0]=r2[0][1]=r2[0][2]=0.0;
 	if(YSYM) roff[1]=r2[0][1]=r2[1][2]=0.0;
 	if(ZSYM) roff[2]=r2[0][2]=r2[1][2]=0.0;
-	//printf("Offsets: ");
 	for(i=0;i<3;i++){
 		roff[i]=roff[i]/norm;
-		//printf("%11.3e ",roff[i]);
 		for(j=0;j<i;j++) r2[i][j]=r2[j][i];
 	}
-	printf("\n<r_ir_j>:\n");
+	snprintf(message,CLog::CHARLENGTH,"\n<r_ir_j>:\n");
+	CLog::Info(message);
 	for(i=0;i<3;i++){
 		for(j=0;j<3;j++){
 			r2[i][j]=r2[i][j]/norm;
 			r2[i][j]=r2[i][j]-roff[i]*roff[j];
-			//printf("%11.3e ",r2[i][j]);
 		}
-		//printf("\n");
 	}
-	//printf("xyz_rms = (%g,%g,%g)\n",sqrt(r2[0][0]),sqrt(r2[1][1]),sqrt(r2[2][2]));
 }
 
 void C3DArray::PrintMoments(){
@@ -814,22 +830,27 @@ void C3DArray::PrintMoments(){
 	if(XSYM) roff[0]=r2[0][1]=r2[0][2]=0.0;
 	if(YSYM) roff[1]=r2[0][1]=r2[1][2]=0.0;
 	if(ZSYM) roff[2]=r2[0][2]=r2[1][2]=0.0;
-	printf("Offsets: ");
+	snprintf(message,CLog::CHARLENGTH,"Offsets: ");
+	CLog::Info(message);
 	for(i=0;i<3;i++){
 		roff[i]=roff[i]/norm;
-		printf("%11.3e ",roff[i]);
+		snprintf(message,CLog::CHARLENGTH,"%11.3e ",roff[i]);
+		CLog::Info(message);
 		for(j=0;j<i;j++) r2[i][j]=r2[j][i];
 	}
-	printf("\n<r_ir_j>:\n");
+	snprintf(message,CLog::CHARLENGTH,"\n<r_ir_j>:\n");
+	CLog::Info(message);
 	for(i=0;i<3;i++){
 		for(j=0;j<3;j++){
 			r2[i][j]=r2[i][j]/norm;
 			r2[i][j]=r2[i][j]-roff[i]*roff[j];
-			printf("%11.3e ",r2[i][j]);
+			snprintf(message,CLog::CHARLENGTH,"%11.3e ",r2[i][j]);
+			CLog::Info(message);
 		}
-		printf("\n");
+		CLog::Info("\n");
 	}
-	printf("xyz_rms = (%g,%g,%g)\n",sqrt(r2[0][0]),sqrt(r2[1][1]),sqrt(r2[2][2]));
+	snprintf(message,CLog::CHARLENGTH,"xyz_rms = (%g,%g,%g)\n",sqrt(r2[0][0]),sqrt(r2[1][1]),sqrt(r2[2][2]));
+	CLog::Info(message);
 }
 
 void C3DArray::DivideByArray(C3DArray *threed_denom){

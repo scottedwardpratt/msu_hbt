@@ -1,5 +1,6 @@
 #include "msu_commonutils/arrays.h"
 #include "msu_commonutils/sf.h"
+#include "msu_commonutils/log.h"
 using namespace std;
 using namespace NMSUPratt;
 
@@ -11,8 +12,7 @@ void ArrayCalc::CalcAExpArrayFromMArray(CCHArray *M,int irm,CCHArray *A,int ira)
 
 	int LMAX=A->GetLMAX();
 	if(M->GetLMAX()!=LMAX){
-		printf("LMAX from M does not match LMAX from A\n");
-		exit(1);
+		CLog::Fatal("LMAX from M does not match LMAX from A\n");
 	}
 	int L,lx,ly,lz;
 	A->SetElement(0,0,0,ira,M->GetElement(0,0,0,ira));
@@ -32,8 +32,7 @@ void ArrayCalc::CalcAExpArrayFromMArray(CCHArray *M,int irm,CCHArray *A,int ira)
 void ArrayCalc::CalcMArrayFromAExpArray(CCHArray *A,int ira,CCHArray *M,int irm){
 	int LMAX=A->GetLMAX();
 	if(M->GetLMAX()!=LMAX){
-		printf("LMAX from M does not match LMAX from A\n");
-		exit(1);
+		CLog::Fatal("LMAX from M does not match LMAX from A\n");
 	}
 	int lx,ly,lz,L;
 	int dlx=1,dly=1,dlz=1;
@@ -92,8 +91,7 @@ void ArrayCalc::SubtractArrays(CCHArray *A,int ira,CCHArray *B,int irb,CCHArray 
 void ArrayCalc::AddArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 	int ir;
 	if((!CompareArrayParameters(A,B)) || (!CompareArrayParameters(B,C))){
-		printf("fatal error, parameters mismatch in ArrayCalc::AddArrays\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::AddArrays\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) AddArrays(A,ir,B,ir,C,ir);
 }
@@ -101,8 +99,7 @@ void ArrayCalc::AddArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 void ArrayCalc::SubtractArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 	int ir;
 	if((!CompareArrayParameters(A,B)) || (!CompareArrayParameters(B,C))){
-		printf("fatal error, parameters mismatch in ArrayCalc::AddArrays\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::AddArrays\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) SubtractArrays(A,ir,B,ir,C,ir);
 }
@@ -110,8 +107,7 @@ void ArrayCalc::SubtractArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 void ArrayCalc::DivideArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 	int ir;
 	if((A->GetNRADIAL()!=B->GetNRADIAL()) || (B->GetNRADIAL()!=C->GetNRADIAL())){
-		printf("FATAL: NRADIAL mismatch in ArrayCalc::DivideArrays\n");
-		exit(1);
+		CLog::Fatal("FATAL: NRADIAL mismatch in ArrayCalc::DivideArrays\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) DivideArrays(A,ir,B,ir,C,ir);
 }
@@ -119,8 +115,7 @@ void ArrayCalc::DivideArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 void ArrayCalc::MultiplyArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 	int ir;
 	if((!CompareArrayParameters(A,B)) || (!CompareArrayParameters(B,C))){
-		printf("fatal error, parameters mismatch in ArrayCalc::MultiplyArrays\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::MultiplyArrays\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) MultiplyArrays(A,ir,B,ir,C,ir);
 }
@@ -128,8 +123,7 @@ void ArrayCalc::MultiplyArrays(CCHArray *A,CCHArray *B,CCHArray *C){
 void ArrayCalc::CopyArray(CCHArray *A,CCHArray *B){
 	int ir;
 	if(!CompareArrayParameters(A,B)){
-		printf("fatal error, parameters mismatch in ArrayCalc::CopyArray\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::CopyArray\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) CopyArray(A,ir,B,ir);
 }
@@ -137,8 +131,7 @@ void ArrayCalc::CopyArray(CCHArray *A,CCHArray *B){
 void ArrayCalc::CalcMArrayFromAExpArray(CCHArray *A,CCHArray *M){
 	int ir;
 	if(!CompareArrayParameters(A,M)){
-		printf("fatal error, parameters mismatch in ArrayCalc::CalcMArrayFromAExpArray\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::CalcMArrayFromAExpArray\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) CalcMArrayFromAExpArray(A,ir,M,ir);
 }
@@ -146,8 +139,7 @@ void ArrayCalc::CalcMArrayFromAExpArray(CCHArray *A,CCHArray *M){
 void ArrayCalc::CalcAExpArrayFromMArray(CCHArray *M,CCHArray *A){
 	int ir;
 	if(!CompareArrayParameters(A,M)){
-		printf("fatal error, parameters mismatch in ArrayCalc::CalcAExpArrayFromMArray\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::CalcAExpArrayFromMArray\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) CalcAExpArrayFromMArray(M,ir,A,ir);
 }
@@ -155,8 +147,7 @@ void ArrayCalc::CalcAExpArrayFromMArray(CCHArray *M,CCHArray *A){
 void ArrayCalc::CalcAExpArrayFromXExpArray(CCHArray *X,CCHArray *A){
 	int ir;
 	if(!CompareArrayParameters(A,X)){
-		printf("fatal error, parameters mismatch in  ArrayCalc::CalcAExpArrayFromXExpArray\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in  ArrayCalc::CalcAExpArrayFromXExpArray\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) CalcAExpArrayFromXExpArray(X,ir,A,ir);
 }
@@ -164,8 +155,7 @@ void ArrayCalc::CalcAExpArrayFromXExpArray(CCHArray *X,CCHArray *A){
 void ArrayCalc::CalcXExpArrayFromAExpArray(CCHArray *A,CCHArray *X){
 	int ir;
 	if(!CompareArrayParameters(A,X)){
-		printf("fatal error, parameters mismatch in ArrayCalc::CalcXExpArrayFromAExpArray\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::CalcXExpArrayFromAExpArray\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) CalcXExpArrayFromAExpArray(X,ir,A,ir);
 }
@@ -173,8 +163,7 @@ void ArrayCalc::CalcXExpArrayFromAExpArray(CCHArray *A,CCHArray *X){
 void ArrayCalc::Detrace(CCHArray *M,CCHArray *A){
 	int ir;
 	if(!CompareArrayParameters(M,A)){
-		printf("fatal error, parameters mismatch in ArrayCalc::Detrace\n");
-		exit(1);
+		CLog::Fatal("fatal error, parameters mismatch in ArrayCalc::Detrace\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) Detrace(M,ir,A,ir);
 }
@@ -321,8 +310,7 @@ void ArrayCalc::Detrace(CCHArray *M,int irm,CCHArray *A,int ira){
 						for(mz=0;mz<=(LMAXM-L-2*mx-2*my)/2;mz++){
 							m=mx+my+mz;
 							if(L+2*m>LMAXM){
-								printf("L+2m is tooooo big\n");
-								exit(1);
+								CLog::Fatal("L+2m is tooooo big in ArrayCalc::Detrace\n");
 							}
 							factor=pow(0.5,m);
 							factor*=chcalc.Factorial(L+2*m)*chcalc.DoubleFactorial(2*L+1)
@@ -426,11 +414,11 @@ void ArrayCalc::MultiplyArrays_Partial(int LMAXA,CCHArray *A,int ira,int LMAXB,C
 }
 
 void ArrayCalc::DivideArrays(CCHArray *A,int ira,CCHArray *B,int irb,CCHArray *C,int irc){
+	char message[100];
 	if( ((!A->GetXSYM() || !B->GetXSYM()) && C->GetXSYM())
 		|| ((!A->GetYSYM() || !B->GetYSYM()) && C->GetYSYM())
 	|| ((!A->GetZSYM() || !B->GetZSYM()) && C->GetZSYM())){
-		printf("FATAL: Symmetry mismatch in ArrayCalc::DivdeArrays\n");
-		exit(1);
+		CLog::Fatal("FATAL: Symmetry mismatch in ArrayCalc::DivdeArrays\n");
 	}
 	CCHCalc chcalc;
 	CCHArray *D;
@@ -492,8 +480,8 @@ void ArrayCalc::DivideArrays(CCHArray *A,int ira,CCHArray *B,int irb,CCHArray *C
 									&& lxb%dlxb==0 && lyb%dlyb==0 && lzb%dlzb==0){
 										delD=-B->GetElement(lxb,lyb,lzb,irb)
 											*D->GetElement(mx,my,mz,0)
-											*(chcalc.Trinomial(lxb,lyb,lzb)*chcalc.Trinomial(mx,my,mz))
-											/(gammad*B0);
+												*(chcalc.Trinomial(lxb,lyb,lzb)*chcalc.Trinomial(mx,my,mz))
+													/(gammad*B0);
 										delDsum+=delD;
 									}
 								}
@@ -511,11 +499,13 @@ void ArrayCalc::DivideArrays(CCHArray *A,int ira,CCHArray *B,int irb,CCHArray *C
 		olddelDsumtest=delDsumtest;
 		Ld+=dLd;
 
-	} while((qtest==0 || Ld<=LMAXA) && Ld<=LMAXD);
-	printf("INFO: Sum in DivideAExpArrays satisfied convergence criteria at L=%d\n",
-		Ld-1);
+	}while((qtest==0 || Ld<=LMAXA) && Ld<=LMAXD);
+	snprintf(message,100,"INFO: Sum in DivideAExpArrays satisfied convergence criteria at L=%d\n",
+	Ld-1);
+	CLog::Info(message);
 	D->SetLMAX(Ld-1);
-	//printf("expD=%g\n",AExpand(0.5,0.5,sqrt(0.5),D));
+	//snprintf(message,100,"expD=%g\n",AExpand(0.5,0.5,sqrt(0.5),D));
+	CLog::Info(message);
 
 	Detrace(D,0,C,irc);
 	delete D;
@@ -575,7 +565,6 @@ void ArrayCalc::CalcAExpArrayFromXExpArray(CCHArray *X,int irx,CCHArray *A,int i
 }
 
 void ArrayCalc::CalcXExpArrayFromAExpArray(CCHArray *A,int ira,CCHArray *X,int irx){
-
 	double snorm,biggy,btest;
 	CCHArray *bb,*C,*XX,*oldC;
 	bool XSYM,YSYM,ZSYM;
@@ -609,8 +598,9 @@ void ArrayCalc::CalcXExpArrayFromAExpArray(CCHArray *A,int ira,CCHArray *X,int i
 	biggy=1.0;
 	while(n<GNMAX && biggy>1.0E-8){
 		if(n%6==0) biggy=0.0;
-		//printf("n=%d, biggest bb=%g, biggestoldC=%g\n",n,bb->GetBiggest(0),
+		//snprintf(message,100,"n=%d, biggest bb=%g, biggestoldC=%g\n",n,bb->GetBiggest(0),
 		//  oldC->GetBiggest(0));
+		// CLog::Info(message);
 		MultiplyArrays_Partial(LMAX,bb,0,LMAX*(n-1),oldC,0,LMAX*n,C,0);
 		if(n>1) C->ScaleArray(-double(n-1)/double(n),0);
 		btest=fabs(C->GetBiggest(0));
@@ -619,7 +609,8 @@ void ArrayCalc::CalcXExpArrayFromAExpArray(CCHArray *A,int ira,CCHArray *X,int i
 		CopyArray(C,0,oldC,0);
 		n+=1;
 	}
-	//printf("nmax was %d\n",n);
+	//snprintf(message,100,"nmax was %d\n",n);
+	// CLog::Info(message);
 
 	Detrace(XX,0,X,irx);
 
@@ -739,13 +730,15 @@ void ArrayCalc::Calc3DArrayFromAExpArray(CCHArray *A,C3DArray *threed){
 }
 
 bool ArrayCalc::CompareArrayParameters(C3DArray *threed,CCHArray *A){
+	char message[100];
 	if(A->GetXSYM()!=threed->GetXSYM() || A->GetYSYM()!=threed->GetYSYM()
 	|| A->GetZSYM()!=threed->GetZSYM()){
-		printf("X: %d=?%d, Y: %d=?%d Z: %d=?%d\n",
-			A->GetXSYM(),threed->GetXSYM(),
-			A->GetYSYM(),threed->GetYSYM(),
-			A->GetZSYM(),threed->GetZSYM());
-		printf("Symmetry mismatch between CHArray and 3DArray!!!\n");
+		snprintf(message,100,"X: %d=?%d, Y: %d=?%d Z: %d=?%d\n",
+		A->GetXSYM(),threed->GetXSYM(),
+		A->GetYSYM(),threed->GetYSYM(),
+		A->GetZSYM(),threed->GetZSYM());
+		CLog::Info(message);
+		CLog::Info("Symmetry mismatch between CHArray and 3DArray!!!\n");
 		return 0;
 	}
 	return 1;
@@ -754,7 +747,7 @@ bool ArrayCalc::CompareArrayParameters(C3DArray *threed,CCHArray *A){
 bool ArrayCalc::CompareArrayParameters(CCHArray *A,C3DArray*threed){
 	if(A->GetXSYM()!=threed->GetXSYM() || A->GetYSYM()!=threed->GetYSYM()
 	|| A->GetZSYM()!=threed->GetZSYM()){
-		printf("Symmetry mismatch between CHArray and 3DArray!!!\n");
+		CLog::Info("Symmetry mismatch between CHArray and 3DArray!!!\n");
 		return 0;
 	}
 	return 1;
@@ -763,19 +756,19 @@ bool ArrayCalc::CompareArrayParameters(CCHArray *A,C3DArray*threed){
 bool ArrayCalc::CompareArrayParameters(CCHArray *A,CCHArray *B){
 	if(A->GetXSYM()!=B->GetXSYM() || A->GetYSYM()!=B->GetYSYM()
 	|| A->GetZSYM()!=B->GetZSYM()){
-		printf("Symmetry mismatch between CHArrays!!!\n");
+		CLog::Info("Symmetry mismatch between CHArrays!!!\n");
 		return 0;
 	}
 	if(A->GetNRADIAL()!=B->GetNRADIAL()){
-		printf("NRADIAL mismatch between CCHArrays!!!\n");
+		CLog::Info("NRADIAL mismatch between CCHArrays!!!\n");
 		return 0;
 	}
 	if(fabs(A->GetRADSTEP())-fabs(B->GetRADSTEP())>1.0E-10){
-		printf("RADSTEP mismatch between CCHArrays!!!\n");
+		CLog::Info("RADSTEP mismatch between CCHArrays!!!\n");
 		return 0;
 	}
 	if(A->GetLMAX()!=B->GetLMAX()){
-		printf("LMAX mismatch metween CCHArrays!!!\n");
+		CLog::Info("LMAX mismatch metween CCHArrays!!!\n");
 		return 0;
 	}
 	return 1;
@@ -788,7 +781,7 @@ bool ArrayCalc::CompareArrayParameters(C3DArray *threeda,C3DArray *threedb){
 	ZSYM=threeda->GetZSYM();
 	if(XSYM!=threedb->GetXSYM() || YSYM!=threedb->GetYSYM()
 	|| ZSYM!=threedb->GetZSYM()){
-		printf("Symmetry mismatch between 3DArrays!!!\n");
+		CLog::Info("Symmetry mismatch between 3DArrays!!!\n");
 		threeda->PrintPars();
 		threedb->PrintPars();
 		return 0;
@@ -796,13 +789,13 @@ bool ArrayCalc::CompareArrayParameters(C3DArray *threeda,C3DArray *threedb){
 	if(threeda->GetNXMAX()!=threedb->GetNXMAX()
 		|| threeda->GetNYMAX()!=threedb->GetNYMAX()
 	|| threedb->GetNZMAX()!=threedb->GetNZMAX()){
-		printf("NXYZMAX mismatch between 3DArrays!!!\n");
+		CLog::Info("NXYZMAX mismatch between 3DArrays!!!\n");
 		return 0;
 	}
 	if(fabs(threeda->GetDELX()-threedb->GetDELX())>1.0E-10
 		|| fabs(threeda->GetDELY()-threedb->GetDELY())>1.0E-10
 	||	fabs(threeda->GetDELZ()-threedb->GetDELZ())>1.0E-10){
-		printf("DELXYZ mismatch between 3DArrays!!!\n");
+		CLog::Info("DELXYZ mismatch between 3DArrays!!!\n");
 		return 0;
 	}
 	return 1;
@@ -961,8 +954,7 @@ void ArrayCalc::InvertArray(C3DArray *A,C3DArray *B){
 void ArrayCalc::InvertArray(CCHArray *A,CCHArray *B){
 	int ir;
 	if(A->GetNRADIAL()!=B->GetNRADIAL()){
-		printf("FATAL: NRADIAL mismatch in ArrayCalc::InvertArrays\n");
-		exit(1);
+		CLog::Fatal("FATAL: NRADIAL mismatch in ArrayCalc::InvertArrays\n");
 	}
 	for(ir=0;ir<A->GetNRADIAL();ir++) InvertArray(A,ir,B,ir);
 }
@@ -971,8 +963,7 @@ void ArrayCalc::InvertArray(CCHArray *A,int ira,CCHArray *B,int irb){
 	if( (A->GetXSYM()!=B->GetXSYM())
 		|| (!A->GetYSYM()!=B->GetYSYM())
 	|| (!A->GetZSYM()!=B->GetZSYM()) ){
-		printf("FATAL: Symmetry mismatch in ArrayCalc::InvertArray\n");
-		exit(1);
+		CLog::Fatal("FATAL: Symmetry mismatch in ArrayCalc::InvertArray\n");
 	}
 	CCHArray *C;
 	C=new CCHArray(A->GetLMAX(),1,1.0,A->GetXSYM(),

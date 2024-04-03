@@ -20,6 +20,7 @@ void Chbt_master::ReadOSCAR_1997(){
 	FILE *fptr_in;
 
 	double t, x, y, z, mass, p0, px, py, pz, bim, dumbo;
+	double u0,ux,uy,uz,newt,newx;
 	int pid,pdg;
 	long long naccept=0;
 	int nrParticlesInEvent,tracknumber=0;
@@ -35,8 +36,10 @@ void Chbt_master::ReadOSCAR_1997(){
 	do{
 		fscanf(fptr_filenames,"%s",dummy);
 		filename=dummy;
-		oscar_filenames.push_back(filename);
-		ifile+=1;
+		if(!feof(fptr_filenames)){
+			oscar_filenames.push_back(filename);
+			ifile+=1;
+		}
 	}while(!feof(fptr_filenames) && ifile<nfilesmax);
 	fclose(fptr_filenames);
 	
@@ -76,24 +79,24 @@ void Chbt_master::ReadOSCAR_1997(){
 							if(OVERRIDE_GAUSS){
 								//printf("m=%g, p=(%g,%g,%g,%g), r=(%g,%g,%g,%g)\n",mass,p0,px,py,pz,t,x,y,z);
 	
-								double pdotr,psquared,gamma;
+								
 								x=GAUSS_Rx*randy->ran_gauss();
 								y=GAUSS_Ry*randy->ran_gauss();
 								z=GAUSS_Rz*randy->ran_gauss();
 								t=0.0;
 								if(!LCMS3DBINNING){
-									double ux=px/mass;
-									double uy=py/mass;
-									double u0=sqrt(1.0+ux*ux+uy*uy);
+									ux=px/mass;
+									uy=py/mass;
+									u0=sqrt(1.0+ux*ux+uy*uy);
 									t=ux*x+uy*y;
-									double newx=(1.0+ux*ux/(1.0+u0))*x+(ux*uy/(1.0+u0))*y;
+									newx=(1.0+ux*ux/(1.0+u0))*x+(ux*uy/(1.0+u0))*y;
 									y=(1.0+uy*uy/(1.0+u0))*y+(uy*ux/(1.0+u0))*x;
 									x=newx;
 								}
 								
-								double uz=Pz/sqrt(mass*mass+px*px+py*pz);
+								uz=pz/sqrt(mass*mass+px*px+py*pz);
 								u0=sqrt(1.0+uz*uz);
-								double newt=u0*t+uz*z;
+								newt=u0*t+uz*z;
 								z=u0*z+uz*t;
 								t=newt;
 							}

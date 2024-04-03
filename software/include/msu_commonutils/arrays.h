@@ -1,7 +1,8 @@
 #ifndef __INCLUDE_ARRAYS_H__
 #define __INCLUDE_ARRAYS_H__
 
-#include "commondefs.h"
+#include "msu_commonutils/commondefs.h"
+#include "msu_commonutils/log.h"
 
 using namespace std;
 namespace NMSUPratt{
@@ -115,6 +116,7 @@ namespace NMSUPratt{
 		int dlx,dly,dlz;
 		void CreateArray();
 		void RandomInit(int iseed);
+		char message[CLog::CHARLENGTH];
 
 	};
 
@@ -174,6 +176,7 @@ namespace NMSUPratt{
 		void CreateArray();
 		void DeleteArray();
 		static Crandy *randy;
+		char message[CLog::CHARLENGTH];
 	};
 
 	class CYlmArray{
@@ -194,6 +197,7 @@ namespace NMSUPratt{
 		int NRADIAL;
 		int LMAX;
 		complex<double> ***ylm;
+		char message[CLog::CHARLENGTH];
 	};
 
 	class CMCList{
@@ -212,6 +216,7 @@ namespace NMSUPratt{
 		int nmc;
 		double norm;
 		double **r;
+		char message[CLog::CHARLENGTH];
 	};
 
 	class CMCPRList{
@@ -232,6 +237,7 @@ namespace NMSUPratt{
 		double norm;
 		double **r;
 		double **p;
+		char message[CLog::CHARLENGTH];
 	};
 
 	namespace ArrayCalc{

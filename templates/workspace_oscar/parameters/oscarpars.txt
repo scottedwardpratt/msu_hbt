@@ -4,10 +4,10 @@ int PIDB 211
 bool ANTIPARTSYMM true
 #
 # Sets binning
-int NQINV 40
+# Note that this is for q=(pa-pb)/2
+int NQINV 50
 double DELQINV 2.0
 int NQ3DARRAY 20
-# Note that this is for q=(pa-pb)/2
 double DELQ3D 5
 # if true, qout is rel momentum in LCMS frame, as opposed to pairframe, irrelavant for gaussian
 # if false qinv^2 = qout^2+qlong^2+qside^2
@@ -47,7 +47,7 @@ double ACCEPTANCE_PTMAX_B 1000.0
 #
 # These are used by CorAL to calc w.f.s. If qinv>CORAL_NQMAX*CORAL_DELQ, wf will default to unity
 double CORAL_DELQ 1.0
-int CORAL_NQMAX 100
+int CORAL_NQMAX 200
 double CORAL_EPSILON 0.5
 int CORAL_KLMAX 6
 double CORAL_DELR 0.1

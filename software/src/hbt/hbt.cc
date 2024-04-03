@@ -95,7 +95,7 @@ void Chbt_master::CalcCFs(){
 								}
 								else
 									nb=cellb->partlist_b.size();
-								CLog::Info("na="+to_string(na)+", nb="+to_string(nb)+"\n");
+								//CLog::Info("na="+to_string(na)+", nb="+to_string(nb)+"\n");
 								for(ia=0;ia<na;ia++){
 									parta=cella->partlist_a[ia];
 									ibmin=0;
@@ -189,16 +189,16 @@ void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){
 	int iq;
 	
 	double qout,qlong,qside,deleta,dely,delphi,qinv_smeared;
+	double Px,Py,Pperp,qx,qy;
 	
 	if(acceptance->TwoParticleAcceptance(parta,partb,efficiency)){
 		Misc::outsidelong(parta->psmear,partb->psmear,qinv_smeared,qout,qside,qlong,deleta,dely,delphi);
 		if(LCMS3DBINNING){
-			double Px,Py,Pperp,qx,qy;
 			qx=parta->p[1]-partb->p[1];
 			qy=parta->p[2]-partb->p[2];
-			Px=parta->P[1]+partb->P[1];
-			Py=parta->P[2]+partb->P[2];
-			Pperp=sqrt(Px*Px+Py*PY);
+			Px=parta->p[1]+partb->p[1];
+			Py=parta->p[2]+partb->p[2];
+			Pperp=sqrt(Px*Px+Py*Py);
 			qout=(Px*qx+Py*qy)/Pperp;
 		}
 		wf->getqrctheta(parta->p,parta->x,partb->p,partb->x,qinv,r,ctheta);

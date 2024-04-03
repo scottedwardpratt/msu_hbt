@@ -2,6 +2,7 @@
 #include "msu_commonutils/sf.h"
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
+#include "msu_commonutils/log.h"
 
 using namespace std;
 using namespace NMSUPratt;
@@ -113,13 +114,16 @@ double CCHArray::GetElement(int lx,int ly,int lz,int ir){
 	int L=lx+ly+lz;
 	if(L<=LMAX && lx%dlx==0 && ly%dly==0 && lz%dlz==0 && ir<NRADIAL) 
 		return A[lx][ly][lz][ir];
-		else{
-			printf("WARNING: Tried to get non-existent element in CCHArray\n");
-			printf("LMAX=%d, XSYM=%d, YSYM=%d, ZSYM=%d, ir=%d\n",
-				LMAX,int(XSYM),int(YSYM),int(ZSYM),ir);
-			printf("l=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
-			return 0.0;
-		}
+	else{
+		snprintf(message,CLog::CHARLENGTH,"WARNING: Tried to get non-existent element in CCHArray\n");
+		CLog::Info(message);
+		snprintf(message,CLog::CHARLENGTH,"LMAX=%d, XSYM=%d, YSYM=%d, ZSYM=%d, ir=%d\n",
+		LMAX,int(XSYM),int(YSYM),int(ZSYM),ir);
+		CLog::Info(message);
+		snprintf(message,CLog::CHARLENGTH,"l=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
+		CLog::Info(message);
+		return 0.0;
+	}
 }
 
 double CCHArray::GetElement(int lx,int ly,int lz,double r){
@@ -131,14 +135,14 @@ void CCHArray::SetElement(int lx,int ly,int lz,int ir,double Element){
 	int L=lx+ly+lz;
 	if(L<=LMAX && L>=0 && lx%dlx==0 && ly%dly==0 && lz%dlz==0 && ir<NRADIAL) 
 		A[lx][ly][lz][ir]=Element;
-		else{
-			printf("Tried to set element out of bounds in CCHArray\n");
-			printf("LMAX=%d, XSYM=%d, YSYM=%d, ZSYM=%d, ir=%d\n",
-				LMAX,int(XSYM),int(YSYM),int(ZSYM),ir);
-			printf("l=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
-			exit(1);
-			
-		}
+	else{
+		CLog::Info("Tried to set element out of bounds in CCHArray\n");
+		snprintf(message,CLog::CHARLENGTH,"LMAX=%d, XSYM=%d, YSYM=%d, ZSYM=%d, ir=%d\n",
+		LMAX,int(XSYM),int(YSYM),int(ZSYM),ir);
+		CLog::Info(message);
+		snprintf(message,CLog::CHARLENGTH,"l=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
+		CLog::Fatal(message);
+	}
 }
 
 void CCHArray::SetElement(int lx,int ly,int lz,double r,double Element){
@@ -152,9 +156,9 @@ void CCHArray::IncrementElement(int lx,int ly,int lz,int ir,double increment){
 		A[lx][ly][lz][ir]+=increment;
 	}
 	else{
-		printf("OUT OF BOUNDS IN INCREMENTELEMENT\n");
-		printf("ell=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
-		exit(1);
+		CLog::Info("OUT OF BOUNDS IN INCREMENTELEMENT\n");
+		snprintf(message,CLog::CHARLENGTH,"ell=(%d,%d,%d), ir=%d\n",lx,ly,lz,ir);
+		CLog::Fatal(message);
 	}
 	
 }
@@ -236,14 +240,15 @@ void CCHArray::ZeroArray(int ir){
 
 void CCHArray::Print(int lx,int ly,int lz){
 	for(int ir=0;ir<NRADIAL;ir++){
-		printf("%6.3f: %10.3e\n",(0.5+ir)*RADSTEP,A[lx][ly][lz][ir]);
+		snprintf(message,CLog::CHARLENGTH,"%6.3f: %10.3e\n",(0.5+ir)*RADSTEP,A[lx][ly][lz][ir]);
+		CLog::Info(message);
 	}
 }
 
 void CCHArray::PrintProjections(){
 	int lx,ly,lz;
 	double a0,ax,ay,az;
-	printf("_____   lx=ly=lz=0     x-proj      y-proj      z-proj  _____\n");
+	CLog::Info("_____   lx=ly=lz=0     x-proj      y-proj      z-proj  _____\n");
 	for(int ir=0;ir<NRADIAL;ir++){
 		a0=A[0][0][0][ir];
 		ax=ay=az=0.0;
@@ -253,7 +258,8 @@ void CCHArray::PrintProjections(){
 		for(ly=0;ly<=LMAX;ly+=dly) ay+=A[lx][ly][lz][ir];
 		ly=lx=0;
 		for(lz=0;lz<=LMAX;lz+=dlz) az+=A[lx][ly][lz][ir];
-		printf("%7.3f: %10.3e  %10.3e  %10.3e  %10.3e\n",(ir+0.5)*RADSTEP,a0,ax,ay,az);
+		snprintf(message,CLog::CHARLENGTH,"%7.3f: %10.3e  %10.3e  %10.3e  %10.3e\n",(ir+0.5)*RADSTEP,a0,ax,ay,az);
+		CLog::Info(message);
 	}
 }
 
@@ -261,7 +267,7 @@ void CCHArray::WriteProjections(string filename){
 	int lx,ly,lz;
 	double a0,ax,ay,az;
 	FILE *fptr=fopen(filename.c_str(),"w");
-	printf("_____   lx=ly=lz=0     x-proj      y-proj      z-proj  _____\n");
+	fprintf(fptr,"_____   lx=ly=lz=0     x-proj      y-proj      z-proj  _____\n");
 	for(int ir=0;ir<NRADIAL;ir++){
 		a0=A[0][0][0][ir];
 		ax=ay=az=0.0;
@@ -279,7 +285,6 @@ void CCHArray::WriteProjections(string filename){
 void CCHArray::GetProjections(double **B){
 	int lx,ly,lz;
 	double a0,ax,ay,az;
-	printf("_____   lx=ly=lz=0     x-proj      y-proj      z-proj  _____\n");
 	for(int ir=0;ir<NRADIAL;ir++){
 		ax=ay=az=0.0;
 		ly=lz=0;
@@ -290,7 +295,6 @@ void CCHArray::GetProjections(double **B){
 		ly=lz=0;
 		for(lz=0;lz<=LMAX;lz+=dlz) az+=A[lx][ly][lz][ir];
 		B[0][ir]=a0; B[1][ir]=ax; B[2][ir]=ay; B[3][ir]=az;
-		//printf("%6.3f: %10.3e  %10.3e  %10.3e  %10.3e\n",(ir+0.5)*RADSTEP,a0,ax,ay,az);
 	}
 }
 
@@ -303,24 +307,34 @@ void CCHArray::PrintArrayFixedIR(int LMAXPrint,int ir){
 	if(XSYM && YSYM && ZSYM) dL=2;
 	if(LMAXPrint>LMAX) LMAXPrint=LMAX;
 	
-	printf("\n______________________________________________________\n");
+	CLog::Info("\n______________________________________________________\n");
 	for(L=0;L<=LMAXPrint;L+=dL){
-		printf("     L=%d\n",L);
-		printf(" lx\\ly:");
-		for(ly=0;ly<=L;ly+=dly) printf(" %4d       ",ly);
-		printf("\n");
+		snprintf(message,CLog::CHARLENGTH,"     L=%d\n",L);
+		CLog::Info(message);
+		CLog::Info(" lx\\ly:");
+		for(ly=0;ly<=L;ly+=dly){
+			snprintf(message,CLog::CHARLENGTH," %4d       ",ly);
+			CLog::Info(message);
+		}
+		CLog::Info("\n");
 		
 		for(lx=0;lx<=L;lx+=dlx){
-			printf(" %3d ",lx);
+			snprintf(message,CLog::CHARLENGTH," %3d ",lx);
+			CLog::Info(message);
 			for(ly=0;ly<=L-lx;ly+=dly){
 				lz=L-lx-ly;
-				if(ZSYM==0 || lz%2==0)
-					printf(" %10.3e ",A[lx][ly][lz][ir]);
-				else printf("%10.3e ",0.0);
+				if(ZSYM==0 || lz%2==0){
+					snprintf(message,CLog::CHARLENGTH," %10.3e ",A[lx][ly][lz][ir]);
+					CLog::Info(message);
+				}
+				else{
+					snprintf(message,CLog::CHARLENGTH,"%10.3e ",0.0);
+					CLog::Info(message);
+				}
 			}
-			printf("\n");
+			CLog::Info("\n");
 		}
-		printf("_________________________________________\n");
+		CLog::Info("_________________________________________\n");
 	}
 }
 
@@ -385,16 +399,15 @@ void CCHArray::ReadAX(string dirname){
 		for(ly=0;ly<=LMAX-lx;ly+=dly){
 			for(lz=0;lz<=LMAX-lx-ly;lz+=dlz){
 				snprintf(filename,160,"%s/lx%d_ly%d_lz%d.tmp",dirname.c_str(),lx,ly,lz);
-				//printf("READING: L=(%d,%d,%d), filename=%s\n",lx,ly,lz,filename);
 				snprintf(shellcommand,320,
-					"if [ ! -e %s ]; then echo Reading Error: %s does not exist; fi",filename,filename);
+				"if [ ! -e %s ]; then echo Reading Error: %s does not exist; fi",filename,filename);
 				system(shellcommand);
 				fptr=fopen(filename,"r");
 				fscanf(fptr,"%d %lf",&NRADIALread,&RADSTEPread);
 				if(fabs(RADSTEPread-RADSTEP)>1.0E-6 || NRADIALread<NRADIAL){
-					printf("Mesh in %s out of whack: RADSTEP=%g =? %g, NRADIAL=%d=?%d\n",
-						filename,RADSTEP,RADSTEPread,NRADIAL,NRADIALread);
-					exit(1);
+					snprintf(message,CLog::CHARLENGTH,"Mesh in %s out of whack: RADSTEP=%g =? %g, NRADIAL=%d=?%d\n",
+					filename,RADSTEP,RADSTEPread,NRADIAL,NRADIALread);
+					CLog::Fatal(message);
 				}
 				for(ir=0;ir<NRADIAL;ir++){
 					fscanf(fptr,"%lf",&aa);
@@ -405,7 +418,6 @@ void CCHArray::ReadAX(string dirname){
 		}
 	}
 	FillRemainderX();
-	//printf("Reading finished\n");
 }
 
 void CCHArray::ReadAllA(string dirname){
@@ -418,16 +430,17 @@ void CCHArray::ReadAllA(string dirname){
 		for(ly=0;ly<=LMAX-lx;ly+=dly){
 			for(lz=0;lz<=LMAX-lx-ly;lz+=dlz){
 				snprintf(filename,160,"%s/lx%d_ly%d_lz%d.tmp",dirname.c_str(),lx,ly,lz);
-				printf("READING: L=(%d,%d,%d), filename=%s\n",lx,ly,lz,filename);
+				snprintf(message,CLog::CHARLENGTH,"READING: L=(%d,%d,%d), filename=%s\n",lx,ly,lz,filename);
+				CLog::Info(message);
 				snprintf(shellcommand,320,
 					"if [ ! -e %s ]; then echo Reading Error: %s, does not exist; fi",filename,filename);
 				system(shellcommand);
 				fptr=fopen(filename,"r");
 				fscanf(fptr,"%d %lf",&NRADIALread,&RADSTEPread);
 				if(fabs(RADSTEPread-RADSTEP)>1.0E-6 || NRADIALread<NRADIAL){
-					printf("Mesh in %s out of whack: RADSTEP=%g =? %g, NRADIAL=%d=?%d\n",
+					snprintf(message,CLog::CHARLENGTH,"Mesh in %s out of whack: RADSTEP=%g =? %g, NRADIAL=%d=?%d\n",
 						filename,RADSTEP,RADSTEPread,NRADIAL,NRADIALread);
-					exit(1);
+					CLog::Fatal(message);
 				}
 				for(ir=0;ir<NRADIAL;ir++){
 					fscanf(fptr,"%lf\n",&aa);
@@ -440,8 +453,10 @@ void CCHArray::ReadAllA(string dirname){
 }
 
 void CCHArray::PrintPars(){
-	printf("XSYM=%d, YSYM=%d, ZSYM=%d\n",int(XSYM),int(YSYM),int(ZSYM));
-	printf("LMAX=%d, NRADIAL=%d, RADSTEP=%g\n",LMAX,NRADIAL,RADSTEP);
+	snprintf(message,CLog::CHARLENGTH,"XSYM=%d, YSYM=%d, ZSYM=%d\n",int(XSYM),int(YSYM),int(ZSYM));
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"LMAX=%d, NRADIAL=%d, RADSTEP=%g\n",LMAX,NRADIAL,RADSTEP);
+	CLog::Info(message);
 }
 
 void CCHArray::IncrementAExpArray(double x,double y,double z,double weight){
@@ -879,7 +894,10 @@ void CCHArray::PrintMoments(){
 	m2[1][2]=m2[2][1];
 	m2[0][2]=m2[2][0];
 	m2[0][1]=m2[1][0];
-	printf("%10.3e %10.3e %10.3e\n",m2[0][0],m2[0][1],m2[0][2]);
-	printf("%10.3e %10.3e %10.3e\n",m2[1][0],m2[1][1],m2[1][2]);
-	printf("%10.3e %10.3e %10.3e\n",m2[2][0],m2[2][1],m2[2][2]);
+	snprintf(message,CLog::CHARLENGTH,"%10.3e %10.3e %10.3e\n",m2[0][0],m2[0][1],m2[0][2]);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"%10.3e %10.3e %10.3e\n",m2[1][0],m2[1][1],m2[1][2]);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"%10.3e %10.3e %10.3e\n",m2[2][0],m2[2][1],m2[2][2]);
+	CLog::Info(message);
 }

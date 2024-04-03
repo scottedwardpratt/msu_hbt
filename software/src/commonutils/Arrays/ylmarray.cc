@@ -81,15 +81,22 @@ void CYlmArray::ZeroArray(int ir){
 void CYlmArray::PrintArrayFixedIR(int ir){
   int L,M;
 
-  printf("\n______________________________________\n");
-  printf(" L \\ M :");
-  for(M=0;M<=LMAX;M++) printf("         %2d             ",M);
-  printf("\n");
-  for(L=0;L<=LMAX;L++){
-    printf(" %3d : ",L);
-    for(M=0;M<=LMAX;M++) printf("(%10.3e,%10.3e) ",
-				real(ylm[L][M][ir]),imag(ylm[L][M][ir]));
-    printf("\n");
+  CLog::Info("\n______________________________________\n");
+  CLog::Info(" L \\ M :");
+  for(M=0;M<=LMAX;M++){
+		snprintf(message,CLog::CHARLENGTH,"         %2d             ",M);
+		CLog::Info(message);
+	}
+	CLog::Info("\n");
+	for(L=0;L<=LMAX;L++){
+		snprintf(message,CLog::CHARLENGTH," %3d : ",L);
+		CLog::Info(message);
+		for(M=0;M<=LMAX;M++){
+			snprintf(message,CLog::CHARLENGTH,"(%10.3e,%10.3e) ",
+			real(ylm[L][M][ir]),imag(ylm[L][M][ir]));
+			CLog::Info(message);
+		}
+		CLog::Info("\n");
   }
-  printf("_________________________________________\n");
+  CLog::Info("_________________________________________\n");
 }
