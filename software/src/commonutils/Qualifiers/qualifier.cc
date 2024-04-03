@@ -60,10 +60,11 @@ void CQualifiers::SetPars(CparameterMap *pmap,int iqual){
 }
 
 void CQualifiers::Print(){
-	printf("------ QUALIFIERS -------\n");
+	CLog::Info("------ QUALIFIERS -------\n");
 	for(int iqual=0;iqual<nqualifiers;iqual++){
 		for(int ipar=0;ipar<qualifier[iqual]->npars;ipar++){
-			printf("%s %s %s\n",qualifier[iqual]->type[ipar].c_str(),qualifier[iqual]->parname[ipar].c_str(),qualifier[iqual]->value[ipar].c_str());
+			snprintf(message,CLog::CHARLENGTH,"%s %s %s\n",qualifier[iqual]->type[ipar].c_str(),qualifier[iqual]->parname[ipar].c_str(),qualifier[iqual]->value[ipar].c_str());
+			CLog::Info(message);
 		}
 	}
 }

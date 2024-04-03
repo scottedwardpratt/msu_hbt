@@ -87,13 +87,15 @@ double CGSLMatrix_Real::Determinant(vector<vector<double>> &A){
 	for(i=0;i<dim;i++){
 		for(j=0;j<dim;j++){
 			gsl_matrix_set(m,i,j,A[i][j]);
-			printf("m[%d][%d]=%g\n",i,j,gsl_matrix_get(m,i,j));
+			snprintf(message,CLog::CHARLENGTH,"m[%d][%d]=%g\n",i,j,gsl_matrix_get(m,i,j));
+			CLog::Info(message);
 		}
 	}
 	
-	printf("howdy, dim=%d\n",dim);
+	snprintf(message,CLog::CHARLENGTH,"howdy, dim=%d\n",dim);
+	CLog::Info(message);
 	gsl_linalg_LU_decomp (m, p, &s);
-	printf("hmmmm\n");
+	CLog::Info("inside CGSLMatrix_Real::Determinant, hmmmm\n");
 	return gsl_linalg_LU_det (m, s);
 }
 
@@ -175,18 +177,6 @@ void CGSLMatrix_Real::Invert_NonSymm(double **A,double **Ainv){
 	double **testm=new double *[dim];
 	for(i=0;i<dim;i++)
 		testm[i]=new double[dim];
-	/**
-	for(i=0;i<dim;i++){
-		for(j=0;j<dim;j++){
-			for(k=0;k<dim;k++) testm[i][j]+=A[i][k]*Ainv[k][j];
-			printf("%10.3e ",testm[i][j]);
-		}
-		printf("\n");
-	}
-	
-	for(i=0;i<dim;i++) delete [] testm[i];
-	delete [] testm;
-	*/
 }
 
 
@@ -194,9 +184,10 @@ void CGSLMatrix_Real::Print(double **A){
 	int i,j;
 	for(i=0;i<dim;i++){
 		for(j=0;j<dim;j++){
-			printf("%11.4e ",A[i][j]);
+			snprintf(message,CLog::CHARLENGTH,"%11.4e ",A[i][j]);
+			CLog::Info(message);
 		}
-		printf("\n");
+		CLog::Info("\n");
 	}
 }
 
@@ -349,7 +340,8 @@ void CGSLMatrix_Real::Cholesky_Invert(double **A,double **Ainv){
 		determinant_c = 1.0;
 		for(i = 0; i < dim; i++)
 			determinant_c *= gsl_matrix_get(m, i, i);
-		printf("det CHOL:%g\n", determinant_c);	
+		snprintf(message,CLog::CHARLENGTH,"det CHOL:%g\n", determinant_c);	
+		CLog::Info(message);
 		determinant_c = determinant_c * determinant_c;
 		exit(1);
 	}
@@ -363,21 +355,6 @@ void CGSLMatrix_Real::Cholesky_Invert(double **A,double **Ainv){
 			Ainv[i][j]=gsl_matrix_get(m,i,j);
 		}
 	}
-	/**
-	double **mcheck=new double *[dim];
-	for(i=0;i<dim;i++){
-		mcheck[i]=new double[dim];
-		for(j=0;j<dim;j++){
-			mcheck[i][j]=0.0;
-			for(k=0;k<dim;k++){
-				mcheck[i][j]+=A[i][k]*Ainv[k][j];
-			}
-			printf("%6.4f ",mcheck[i][j]);
-		}
-		printf("\n");
-		delete [] mcheck[i];
-	}
-	delete [] mcheck;
-	**/
+	
 }
 

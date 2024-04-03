@@ -140,8 +140,7 @@ void Bessel::CalcJN_real(int ell,double x,double &jl,double &nl,double &jlprime,
 	double s=sin(x);
 	double c=cos(x);
 	if(ell>3){
-		printf("increase array size in CalcJN_real\n");
-		exit(1);
+		CLog::Fatal("increase array size in CalcJN_real\n");
 	}
 	j[0]=s;
 	n[0]=c;
@@ -166,8 +165,7 @@ void Bessel::CalcJN_imag(int ell,double x,double &jl,double &nl,double &jlprime,
 	double s=sinh(x);
 	double c=cosh(x);
 	if(ell>3){
-		printf("increase array size in CalcJN_imag\n");
-		exit(1);
+		CLog::Fatal("increase array size in CalcJN_imag\n");
 	}
 	j[0]=s;
 	n[0]=c;

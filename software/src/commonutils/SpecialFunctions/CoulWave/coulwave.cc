@@ -35,7 +35,6 @@ void CoulWave::GetFG(int L,double x,double eta,double *FL,double *GL){
 		if(fabs(phase)>2.0){
 			*FL=-*FL;
 			*GL=-*GL;
-			//printf("L=%d, x=%6.3f, phase=%10.6f, sigma=%g\n",L,x,phase,sigma);
 		}
 	}
 #endif */
@@ -172,7 +171,6 @@ void CoulWave::GetFGprime_ImagQ(int ellmax,double x,double eta,double *FL,double
 			root=sqrt(-root);
 			sign=-1;
 		}
-		//printf("root=%g\n",root);
 		ff=(((l+1.0)*(l+1.0)/x)+eta);
 		F[l+1]=(ff*F[l]-(l+1.0)*Fprime[l])/root;
 		Fprime[l+1]=-(sign*root*F[l]+ff*F[l+1])/(l+1.0);
@@ -238,14 +236,13 @@ complex<double>  eta){
 
 	/* The notation is like Gr. + R, page 1063.
 	The Coulomb wave function is the same as W(i*eta,l+1/2,2*i*rho) */
-		double psi1,psi2,sum2;
+	double psi1,psi2,sum2;
 	complex<double> delsum1,sum1,lterm,answer,ci(0.0,1.0);
 	double cdcon1,cdcon2,factor,cx,delp,psi3,fact1,fact2,rr,ceta;
 	int k;
 	rr=real(-ci*r);
 	ceta=real(-ci*eta);
 
-	//printf("eta=(%g,%g)\n",real(eta),imag(eta));
 	cdcon1=real(CoulWave::cgamma(-double(l)+ceta));
 	cdcon2=real(CoulWave::cgamma(double(l+1)+ceta));
 
@@ -264,7 +261,7 @@ complex<double>  eta){
 		//     if(abs(delp)<1.0E-12) goto CONVERGE1;
 		if(fabs(delp)<1.0E-12) goto CONVERGE1;
 	}
-	printf("never escaped loop1 in cw2_small_r!\n");
+	CLog::Info("never escaped loop1 in cw2_small_r!\n");
 	CONVERGE1:
 	lterm=ci*PI+log(2.0*rr);
 	fact1=cdcon2/dgamma(2*l+2);
@@ -279,25 +276,17 @@ complex<double>  eta){
 		sum1=sum1+delsum1;
 		if(abs(delsum1)<1.0E-15) goto CONVERGE2;
 	}
-	printf("never escaped loop2 in cw2_small_r!\n");
+	CLog::Info("never escaped loop2 in cw2_small_r!\n");
 	CONVERGE2:
 	fact2=dgamma(2.0*l+1)*cdcon1/pow(2.0*rr,2*l+1);
 	sum2=fact2;
-	//printf("r=(%g,%g), cdcon1=(%g,%g)\n",real(r),imag(r),real(cdcon1),imag(cdcon1));
-	//printf("k=0, fact2=(%g,%g)\n",real(fact2),imag(fact2));
 	for(k=1;k<=2*l;k++){
 		fact2=fact2*(double(k-l-1)+ceta)*rr/(double(k)*double(2*l-k+1));
-		//printf("k=%d, fact2=(%g,%g)\n",k,real(fact2),imag(fact2));
 		sum2=sum2+fact2;
 	}
 	sum1=factor*sum1;
 	sum2=factor*sum2;
 	answer=(sum1+sum2);//*exp(0.5*PI*eta);
-	//printf("factor=(%g,%g)\n",real(factor),imag(factor));
-	/*
-	printf("r=(%g,%g), eta=(%g,%g), factor=(%g,%g), sum1=(%g,%g), sum2=(%g,%g), answer=(%g,%g)\n",real(r),imag(r),
-		real(eta),imag(eta),real(factor),imag(factor),real(sum1),imag(sum1),real(sum2),imag(sum2),real(answer),imag(answer));
-	*/
 	return answer;
 }
 /* ****************************************** */

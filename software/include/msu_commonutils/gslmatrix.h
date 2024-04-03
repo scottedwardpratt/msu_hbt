@@ -2,6 +2,7 @@
 #define __GSLMATRIX_H__
 
 #include "commondefs.h"
+#include "log.h"
 
 using namespace std;
 namespace NMSUPratt{
@@ -31,6 +32,7 @@ namespace NMSUPratt{
 		gsl_matrix *m,*minv;
 		gsl_vector *v;
 		double **U;
+		char message[CLog::CHARLENGTH];
 	};
 
 	// COMPLEX MATRICES
@@ -52,6 +54,7 @@ namespace NMSUPratt{
 		complex<double> **U;
 		gsl_matrix_complex *m;
 		gsl_vector_complex *v;
+		char message[CLog::CHARLENGTH];
 	};
 
 }

@@ -1,6 +1,7 @@
 #ifndef INCLUDE__SF_H
 #define INCLUDE__SF_H
 #include "commondefs.h"
+#include "log.h"
 
 using namespace std;
 namespace NMSUPratt{
@@ -16,6 +17,7 @@ namespace NMSUPratt{
 		double ReYlm(int ell, int m, double x, double y, double z);
 		double ImYlm(int ell, int m, double theta, double phi);
 		double ImYlm(int ell, int m, double x, double y, double z);
+		char message[CLog::CHARLENGTH];
 
 	};
 
@@ -120,6 +122,7 @@ namespace NMSUPratt{
 
 		void iswitch(int &i,int &j);
 		void overlapinit(int lx,int ly,int lz);
+		char message[CLog::CHARLENGTH];
 
 	};
 

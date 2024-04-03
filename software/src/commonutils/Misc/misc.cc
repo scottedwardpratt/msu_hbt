@@ -173,7 +173,7 @@ void Misc::outsidelong(FourVector &pa,FourVector &pb, double &qinv, double &qout
 
 void Misc::Pause(){
 	double pausedummy;
-	printf("PAUSED, enter anything to continue: ");
+	CLog::Info("PAUSED, enter anything to continue: ");
 	scanf("%lf",&pausedummy);
 }
 
@@ -185,6 +185,7 @@ void Misc::Pause(int seconds){
 }
 
 double Misc::CalcDelta_FromSqWells(int ell,double mu,int nwells,double q,double *V0,double *r){
+	char message[CLog::CHARLENGTH];
 	int iwell;
 	double norm,dd;
 	double *qq,*A,*B;
@@ -203,8 +204,8 @@ double Misc::CalcDelta_FromSqWells(int ell,double mu,int nwells,double q,double 
 		realcheck[iwell]=1;
 		ek=q*q-2.0*mu*V0[iwell];
 		qq[iwell]=sqrt(fabs(ek));
-		if(ek<0.0) realcheck[iwell]=0;
-		//printf("q[%d]=%g, realcheck=%d\n",iwell,qq[iwell],realcheck[iwell]);
+		if(ek<0.0)
+			realcheck[iwell]=0;
 	}
 	for(iwell=1;iwell<=nwells;iwell++){
 
@@ -226,10 +227,12 @@ double Misc::CalcDelta_FromSqWells(int ell,double mu,int nwells,double q,double 
 	for(iwell=0;iwell<=nwells;iwell++){
 		A[iwell]*=norm;
 		B[iwell]*=norm;
-		//printf("iwell=%d, A=%g, B=%g\n",iwell,A[iwell],B[iwell]);
 	}
 	dd=atan2(B[nwells],A[nwells]);
-	if(q<20) printf("A=%g, B=%g\n",A[nwells],B[nwells]);
+	if(q<20){
+		snprintf(message,CLog::CHARLENGTH,"A=%g, B=%g\n",A[nwells],B[nwells]);
+		CLog::Info(message);
+	}
 	dd-=2.0*PI*rint(dd/(2.0*PI));
 	if(dd<0.0) dd+=PI;
 
@@ -243,6 +246,7 @@ double Misc::CalcDelta_FromSqWells(int ell,double mu,int nwells,double q,double 
 
 void Misc::Cubic(double a0,double a1,double a2,double a3,
 complex<double>& z1, complex<double>& z2,complex<double>& z3){
+	char message[CLog::CHARLENGTH];
 	complex<double> x,w,check,dZdz,dz,z[3];
 	double Q,R,p,q,arg;
 	int i,ncheck=0;
@@ -254,12 +258,10 @@ complex<double>& z1, complex<double>& z2,complex<double>& z3){
 	Q=p/3.0;
 	R=0.5*q;
 	arg=R*R+Q*Q*Q;
-		//printf("p=%g, q=%g, Q=%g,R=%g, arg=%g\n",p,q,Q,R,arg);
 	if(arg>0.0){
 		w=pow(fabs(R+sqrt(arg)),1.0/3.0);
 		if(R+sqrt(arg)<0.0) w=-w;
 		x=w-p/(3.0*w);
-			//printf("X CHECK : 0 =? (%g,%g)\n",real(x*x*x+p*x-q),imag(x*x*x+p*x-q));
 		z1=x-a2/3.0;
 		w=w*exp(2.0*ci*PI/3.0);
 		x=w-p/(3.0*w);
@@ -289,8 +291,8 @@ complex<double>& z1, complex<double>& z2,complex<double>& z3){
 		ncheck=0;
 		while(abs(check)>1.0E-12){
 			if(ncheck>10){
-				printf("FAILURE IN CUBIC SOLVER: check=(%g,%g) =? 0\n",real(check),imag(check));
-				exit(1);
+				snprintf(message,CLog::CHARLENGTH,"FAILURE IN CUBIC SOLVER: check=(%g,%g) =? 0\n",real(check),imag(check));
+				CLog::Fatal(message);
 			}
 			dZdz=3.0*pow(z[i],2)+2.0*a2*z[i]+a1;
 			dz=-(pow(z[i],3)+a2*pow(z[i],2)+a1*z[i]+a0)/dZdz;
@@ -312,8 +314,7 @@ double Misc::signswitch(double a, double b) {
 void Misc::Quartic(double a0,double a1,double a2,double a3,double a4,complex<double> &z1, complex<double> &z2,complex<double> &z3,complex<double> &z4){
 	complex<double> z[4];
 	if(a4==0.0){
-		printf("Leading coefficient zero in cern_quartic_real_coeff::solve_rc().\n");
-		exit(-1);
+		CLog::Fatal("Leading coefficient zero in cern_quartic_real_coeff::solve_rc().\n");
 	}
 	Quartic(a0,a1,a2,a3,a4,z);
 	z1=z[0]; z2=z[1]; z3=z[2]; z4=z[3];	
