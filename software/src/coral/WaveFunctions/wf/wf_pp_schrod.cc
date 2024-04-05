@@ -13,14 +13,12 @@ CWaveFunction_pp_schrod::CWaveFunction_pp_schrod(string parsfilename) : CWaveFun
 	IDENTICAL=1;
 	q1q2=1;
 	STRONG=true;
-	
 	nchannels=4;
 	ellmax=1;
 	InitArrays();
 	ell[0]=0;
 	ell[1]=ell[2]=ell[3]=1;
-	InitWaves();
-	
+	InitWaves();	
 	rmax_schrod=6.0;
 	nrmax_schrod=600;
 	delpsi=new complex<double> **[nchannels];
