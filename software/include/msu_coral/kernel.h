@@ -11,7 +11,7 @@ namespace NMSUPratt{
 
 	class CKernel{
 	public:
-		CKernel( string kparsfilename="" );
+		CKernel(string kparsfilename);
 		virtual ~CKernel();
 		virtual double GetValue( int ell, double q, double r );
 		double GetValue( int ell, int iq, int ir );
