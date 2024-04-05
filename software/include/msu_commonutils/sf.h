@@ -17,7 +17,6 @@ namespace NMSUPratt{
 		double ReYlm(int ell, int m, double x, double y, double z);
 		double ImYlm(int ell, int m, double theta, double phi);
 		double ImYlm(int ell, int m, double x, double y, double z);
-		char message[CLog::CHARLENGTH];
 
 	};
 
