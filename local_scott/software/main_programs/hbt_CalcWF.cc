@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc,char *argv[]){
 	Crandy *randy=new Crandy(1234);
-	double R,cf,x,y,z;
+	double R,cf,x,y,z,root2=sqrt(2.0);
 	unsigned int imc,NMC=100000;
 	string parsfilename;
 	printf("Enter Rinv in fm: ");
@@ -23,9 +23,9 @@ int main(int argc,char *argv[]){
 	for(qmag=2;qmag<81;qmag+=2){
 		cf=0.0;
 		for(imc=0.0;imc<NMC;imc++){
-			x=R*randy->ran_gauss();
-			y=R*randy->ran_gauss();
-			z=R*randy->ran_gauss();
+			x=R*root2*randy->ran_gauss();
+			y=R*root2*randy->ran_gauss();
+			z=R*root2*randy->ran_gauss();
 			r=sqrt(x*x+y*y+z*z);
 			ctheta=z/r;
 			psisquared=wf->GetPsiSquared(qmag,r,ctheta);

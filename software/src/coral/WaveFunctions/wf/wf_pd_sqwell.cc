@@ -31,13 +31,13 @@ CWaveFunction_pd_sqwell::CWaveFunction_pd_sqwell(string parsfilename) : CWaveFun
   nwells=new int[nchannels];
   nwells[0]=3;
   nwells[1]=1;
-	nwells[2]=1;
+	nwells[2]=2;
 	nwells[3]=2;
 
   SquareWell_MakeArrays();
 	
-  a[0][0]=3.23445; a[0][1]=5.57680; a[0][2]=7.71351; // L=0, S=1/2
-  a[1][0]=4.99965; // L=0, S=3/2
+  //a[0][0]=3.23445; a[0][1]=5.57680; a[0][2]=7.71351; // L=0, S=1/2
+  //a[1][0]=4.99965; // L=0, S=3/2
 	//a[2][0]=4.99965; // L=0, S=3/2
 	//a[3][0]= 0.54790; a[3][1]=7.17907; // L=0, S=3/2
 	
@@ -48,17 +48,24 @@ CWaveFunction_pd_sqwell::CWaveFunction_pd_sqwell(string parsfilename) : CWaveFun
 	//V0[2][0]=4.0;
 	//V0[3][0]=12.63402; V0[3][1]=-2.06386;
 	
-	a[2][0]=7.93404; 
-	V0[2][0]=0.373212; 
-	a[3][0]=0.426206; a[3][1]=7.17018; 
-	V0[3][0]=12.109; V0[3][1]=-2.01329; 
-	//V0[0][0]=V0[0][1]=V0[0][2]=V0[1][0]=0.0;
+	a[0][0]=3.23445; a[0][1]=5.5768; a[0][2]=7.71351; 
+	V0[0][0]=-28.002; V0[0][1]=37.283; V0[0][2]=-5.829; 
+	a[1][0]=4.99965; 
+	V0[1][0]=108.203; 
+	a[2][0]=3.32848; a[2][1]=7.99995; 
+	V0[2][0]=-6.01059; V0[2][1]=0.72767; 
+	a[3][0]=0.409945; a[3][1]=7.17012; 
+	V0[3][0]=12.1599; V0[3][1]=-2.01299;
+	
+	//V0[2][0]=V0[2][1]=V0[3][0]=V0[3][1]=0.0;
 
   SquareWell_Init();
 	
+	/*
+	
 	bool atest;
 	double chisquared,dd;
-	double Vstep=0.3,astep=0.1;
+	double Vstep=0.03,astep=0.005;
 	int ichannel,iq,iwell;
 	double bestchisquared=1.0E99;
 	vector<vector<double>> Vbest,abest;
@@ -77,51 +84,72 @@ CWaveFunction_pd_sqwell::CWaveFunction_pd_sqwell(string parsfilename) : CWaveFun
 		}
 	}
 	// uses delq=10
-	for(int imc=0;imc<1000;imc++){
+	int ic0test=3,icftest=3;
+	for(int imc=0;imc<10000;imc++){
 		SquareWell_Init();
 		chisquared=0.0;
-		for(ichannel=3;ichannel<nchannels;ichannel++){
+		for(ichannel=ic0test;ichannel<=icftest;ichannel++){
 			iq=4;
 			dd=delta[ichannel][iq]*180.0/PI;
+			while(dd>90.0)
+				dd-=180.0;
+			while(dd<-90.0)
+				dd+=180.0;
 			chisquared+=pow(dd-expdata_e243[ichannel],2);
 			iq=5;
 			dd=delta[ichannel][iq]*180.0/PI;
+			while(dd>90.0)
+							dd-=180.0;
+						while(dd<-90.0)
+							dd+=180.0;
 			chisquared+=pow(dd-expdata_e363[ichannel],2);
 			iq=7;
 			dd=delta[ichannel][iq]*180.0/PI;
+			while(dd>90.0)
+				dd-=180.0;
+			while(dd<-90.0)
+				dd+=180.0;
 			chisquared+=pow(dd-expdata_e675[ichannel],2);
 			iq=9;
 			dd=delta[ichannel][iq]*180.0/PI;
-			chisquared+=pow(dd-expdata_e1082[ichannel],2);	
+			while(dd>90.0)
+				dd-=180.0;
+			while(dd<-90.0)
+				dd+=180.0;
+			chisquared+=pow(dd-expdata_e1082[ichannel],2);
 		}
 		//printf("chisquared=%g\n",chisquared);
 		if(chisquared<bestchisquared){
 			printf("success!!!!\n");
-			for(ichannel=3;ichannel<nchannels;ichannel++){
+			for(ichannel=ic0test;ichannel<=icftest;ichannel++){
 				for(iwell=0;iwell<nwells[ichannel];iwell++){
 					Vbest[ichannel][iwell]=V0[ichannel][iwell];
 					abest[ichannel][iwell]=a[ichannel][iwell];
 				}
 			}
 			bestchisquared=chisquared;
-			printf("bestchisquared=%g\n",chisquared);
+			printf("bestchisquared=%g, astep=%g, Vstep=%g\n",chisquared,astep,Vstep);
+			Vstep*=0.98;
+			astep*=0.98;
 		}
-		for(ichannel=3;ichannel<nchannels;ichannel++){
+		for(ichannel=ic0test;ichannel<=icftest;ichannel++){
 			for(iwell=0;iwell<nwells[ichannel];iwell++){
 				V0[ichannel][iwell]=Vbest[ichannel][iwell]+Vstep*randy.ran_gauss();
-				atest=false;
 				do{
+					atest=false;
 					a[ichannel][iwell]=abest[ichannel][iwell]+astep*randy.ran_gauss();
-					if(a[ichannel][iwell]<0.0)
+					if(a[ichannel][iwell]<0.0 || a[ichannel][iwell]>8.0)
 						atest=true;
 					if(iwell>0 && a[ichannel][iwell]<a[ichannel][iwell-1]){
 						atest=true;
 					}
+					//if(atest)
+					//	printf("yikes, newa[%d][%d]=%g\n",ichannel,iwell,a[ichannel][iwell]);
 				}while(atest);
 			}
 		}
 	}
-	for(ichannel=3;ichannel<nchannels;ichannel++){
+	for(ichannel=0;ichannel<nchannels;ichannel++){
 		for(iwell=0;iwell<nwells[ichannel];iwell++){
 			printf("a[%d][%d]=%g; ",ichannel,iwell,abest[ichannel][iwell]);
 		}
@@ -139,6 +167,7 @@ CWaveFunction_pd_sqwell::CWaveFunction_pd_sqwell(string parsfilename) : CWaveFun
 		}
 	}
 	SquareWell_Init();
+	*/
 	
 		
 }
