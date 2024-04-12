@@ -360,14 +360,14 @@ void CWaveFunction::getqrctheta(FourVector &p1,FourVector &r1,FourVector &p2,Fou
 
 void CWaveFunction::PrintPhaseShifts(){
 	int iq,ichannel;
-	double q,KE1,mu;
+	double q,KE1,mu,dd;
 	CLog::Info("printing phaseshifts\n");
 	snprintf(message,CLog::CHARLENGTH,"-------- PHASE SHIFTS --------\n");
 	CLog::Info(message);
-	snprintf(message,CLog::CHARLENGTH,"q(MeV/c)  KE_1(MeV)  ");
+	snprintf(message,CLog::CHARLENGTH,"q(MeV/c)  KE_1(MeV)");
 	CLog::Info(message);
 	for(ichannel=0;ichannel<nchannels;ichannel++){
-		snprintf(message,CLog::CHARLENGTH,"    l=%d   ",ell[ichannel]);
+		snprintf(message,CLog::CHARLENGTH,"  l=%d     ",ell[ichannel]);
 		CLog::Info(message);
 	}
 	snprintf(message,CLog::CHARLENGTH,"\n");
@@ -380,7 +380,12 @@ void CWaveFunction::PrintPhaseShifts(){
 		snprintf(message,CLog::CHARLENGTH,"%7.2f %7.2f ",q,KE1);
 		CLog::Info(message);
 		for(ichannel=0;ichannel<nchannels;ichannel++){
-			snprintf(message,CLog::CHARLENGTH,"% 10.3f",(180.0/PI)*delta[ichannel][iq]-180.0);
+			dd=(180.0/PI)*delta[ichannel][iq]-180.0;
+			while(dd>180.0)
+				dd-=180.0;
+			while(dd<-180.0)
+				dd+=180.0;
+			snprintf(message,CLog::CHARLENGTH,"% 10.3f",dd);
 			CLog::Info(message);
 		}
 		CLog::Info("\n");

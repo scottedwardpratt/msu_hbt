@@ -168,7 +168,7 @@ void CWaveFunction::SquareWell_Init(){
 			SquareWell_CalcDelPhi(iq,r,DelPhiArray[iq][ir]);
 		}
 	}
-	//CLog::Info("FINISHED INITIALIZATION OF WAVEFUNCTIONS FOR PARTIAL WAVES\n");
+	CLog::Info("FINISHED INITIALIZATION OF WAVEFUNCTIONS FOR PARTIAL WAVES\n");
 	
 }
 
