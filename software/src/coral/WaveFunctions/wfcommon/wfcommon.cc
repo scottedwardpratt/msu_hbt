@@ -361,7 +361,6 @@ void CWaveFunction::getqrctheta(FourVector &p1,FourVector &r1,FourVector &p2,Fou
 void CWaveFunction::PrintPhaseShifts(){
 	int iq,ichannel;
 	double q,KE1,mu,dd;
-	CLog::Info("printing phaseshifts\n");
 	snprintf(message,CLog::CHARLENGTH,"-------- PHASE SHIFTS --------\n");
 	CLog::Info(message);
 	snprintf(message,CLog::CHARLENGTH,"q(MeV/c)  KE_1(MeV)");
@@ -381,9 +380,9 @@ void CWaveFunction::PrintPhaseShifts(){
 		CLog::Info(message);
 		for(ichannel=0;ichannel<nchannels;ichannel++){
 			dd=(180.0/PI)*delta[ichannel][iq]-180.0;
-			while(dd>180.0)
+			while(dd>90.0)
 				dd-=180.0;
-			while(dd<-180.0)
+			while(dd<-90.0)
 				dd+=180.0;
 			snprintf(message,CLog::CHARLENGTH,"% 10.3f",dd);
 			CLog::Info(message);
