@@ -6,8 +6,8 @@ using namespace std;
 
 int main(int argc,char *argv[]){
 	Crandy *randy=new Crandy(1234);
-	double R,cf,unc,x,y,z,root2=sqrt(2.0);
-	unsigned int imc,NMC=100000;
+	double R,cf,x,y,z,root2=sqrt(2.0);
+	unsigned int imc,NMC=1000000;
 	string parsfilename;
 	printf("Enter Rinv in fm: ");
 	scanf("%lf",&R);
@@ -18,10 +18,13 @@ int main(int argc,char *argv[]){
 	else{
 		parsfilename="parameters/"+string(argv[1])+".txt";
 	}
-	CWaveFunction_pp_schrod *wf=new CWaveFunction_pp_schrod(parsfilename);
+	CWaveFunction_pd_sqwell *wf=new CWaveFunction_pd_sqwell(parsfilename);
+	//wf->PrintPhaseShifts();
+	
+	
 	double psisquared,qmag,r,ctheta;
-	for(qmag=2;qmag<81;qmag+=2){
-		cf=unc=0.0;
+	for(qmag=2;qmag<201;qmag+=2){
+		cf=0.0;
 		for(imc=0.0;imc<NMC;imc++){
 			x=R*root2*randy->ran_gauss();
 			y=R*root2*randy->ran_gauss();
@@ -30,13 +33,11 @@ int main(int argc,char *argv[]){
 			ctheta=z/r;
 			psisquared=wf->GetPsiSquared(qmag,r,ctheta);
 			cf+=psisquared;
-			unc+=psisquared*psisquared;
 		}
 		cf=cf/double(NMC);
-		unc=unc/double(NMC);
-		unc=sqrt(unc-cf*cf)/sqrt(double(NMC));
-		printf("%5.1f %g +/- %g\n",qmag,cf,unc);
+		printf("%5.1f %g\n",qmag,cf);
 	}
+	
 	
 	return 0;
 }

@@ -38,9 +38,9 @@ Chbt_master::Chbt_master(string parsfilename_prefix_set){
 	}
 	
 	Chbt_cell_list::master=this;
-	if(!GAUSS){
+	//if(!GAUSS){
 		cell_list=new Chbt_cell_list(&parmap);
-	}
+		//}
 	
 	Chbt_CFs::master=this;
 	cfs=new Chbt_CFs(&parmap);
@@ -130,14 +130,13 @@ void Chbt_master::CalcCFs_Gaussian(){
 	double x,y,z,qx,qy,qz,q,r,ctheta,weight,root2=sqrt(2.0);
 	int imc,NMC=parmap.getI("NMC_GAUSSIAN",1000);
 	int iq,iqx,iqy,iqz,isx,isy,isz,nsx=2,nsy=2,nsz=2;
-	printf("howdy a\n");
+	long long int ncalc=0;
 	if(cfs->XSYM)
 		nsx=1;
 	if(cfs->YSYM)
 		nsy=1;
 	if(cfs->ZSYM)
 		nsz=1;
-	printf("howdy b\n");
 	for(iqx=0;iqx<cfs->NQ3D;iqx++){
 		for(isx=0;isx<nsx;isx++){
 			for(iqy=0;iqy<cfs->NQ3D;iqy++){
@@ -164,6 +163,7 @@ void Chbt_master::CalcCFs_Gaussian(){
 										r=sqrt(x*x+y*y+z*z);
 										ctheta=(qx*x+qy*y+qz*z)/(q*r);
 										weight=wf->GetPsiSquared(q,r,ctheta);
+										ncalc+=1;
 										iq=lrint(floor(q/cfs->DQINV));
 										cfs->C_of_qinv[iq]+=weight;
 										cfs->denom_of_qinv[iq]+=1;
@@ -181,7 +181,7 @@ void Chbt_master::CalcCFs_Gaussian(){
 			}
 		}
 	}
-	printf("adios\n");
+	printf("ncalc=%lld\n",ncalc);
 }
 
 void Chbt_master::IncrementCFs(Chbt_part *parta,Chbt_part *partb){
